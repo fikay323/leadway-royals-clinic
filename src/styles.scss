@@ -2,5 +2,122 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+@layer utilities {
+    /* Hide scrollbar for Chrome, Safari and Opera */
+    .no-scrollbar::-webkit-scrollbar {
+        display: none;
+    }
+   /* Hide scrollbar for IE, Edge and Firefox */
+    .no-scrollbar {
+        -ms-overflow-style: none;  /* IE and Edge */
+        scrollbar-width: none;  /* Firefox */
+  }
+}
+
+
+html,
+body {
+    height: 100%;
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    font-family: Mulish, "Helvetica Neue", sans-serif;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 30px white inset important;
+}
+
+.background-texture {
+    background-image: repeating-linear-gradient(-45deg,
+            #2D7DFF,
+            #2D7DFF 50px,
+            #2A7AFC 50px,
+            #2A7AFC 70px);
+}
+
+.primary-btn {
+    @apply rounded;
+    @apply flex;
+    @apply items-center;
+    @apply justify-center;
+}
+
+.btn {
+    @apply primary-btn w-28 h-10 font-medium;
+}
+
+.btn-full {
+    @apply primary-btn w-full font-medium;
+}
+
+.bold {
+    font-weight: 700;
+}
+
+.small {
+    font-size: 10px;
+    line-height: 10px;
+}
+
+.very-small {
+    font-size: 5px;
+    line-height: 10px
+}
+
+.text-xxs {
+    @apply small;
+}
+
+.text-xxxs {
+    @apply very-small;
+}
+
+.text-footer {
+    font-size: 7px;
+}
+
+@keyframes spinner {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.btn_spinner:before {
+    content: '';
+    box-sizing: border-box;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin-top: -10px;
+    margin-left: -10px;
+    border-radius: 50%;
+    border: 2px solid #ffffff;
+    border-top-color: #B8B8B8;
+    animation: spinner .8s linear infinite;
+}
+
+.error-snackbar-popup .mdc-snackbar__surface{
+    @apply bg-red-600 #{!important};
+}
+
+.success-snackbar-popup .mdc-snackbar__surface{
+    @apply bg-green-700 #{!important};;
+}
+
+.modalBackdropClass{
+    @apply opacity-25;
+    @apply bg-primary-900  #{!important};
+}
+
+.backgroundLessModal .mat-mdc-dialog-container .mdc-dialog__container .mdc-dialog__surface {
+    @apply bg-transparent shadow-none;
+}

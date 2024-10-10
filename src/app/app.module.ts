@@ -13,7 +13,6 @@ import { LoginComponent } from './features/auth/partials/login/login.component';
 import { RegisterComponent } from './features/auth/partials/register/register.component';
 import { RouterModule } from '@angular/router';
 import { AuthComponent } from './features/auth/auth.component';
-import { CustomPrimaryButtonComponent } from './shared/components/custom-primary-button/custom-primary-button.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SharedModule } from './shared/shared.module';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
