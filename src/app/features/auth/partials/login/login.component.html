@@ -1,0 +1,35 @@
+<main class="h-fit font-mullish">
+    <form class="flex flex-col" [formGroup]="loginForm" (ngSubmit)="onUserLogin()">
+        <span class="text-2xl font-semibold mb-7">Log In</span>
+
+        <label class="">Email</label>
+        <input
+            class="border {{ loginForm.controls['email'].touched && (loginForm.controls['email'].hasError('required') || loginForm.controls['email'].hasError('email')) ? 'border-red-500 bg-red-100' : 'border-borderColor bg-transparent' }} rounded-md p-3 outline-none focus:border-2"
+            placeholder="name@example.com" formControlName="email" (blur)="updateErrorMessage()" required>
+        @if (loginForm.controls['email'].invalid) {
+        <small class="text-red-500 leading-3">{{ emailErrorMessage }}</small>
+        }
+        <label class="mt-3 ">Password</label>
+        <div class="relative">
+            <input
+                class="border {{ loginForm.controls['password'].touched && loginForm.controls['password'].hasError('passwordInvalid') ? 'border-red-500 bg-red-100' : 'border-borderColor bg-transparent' }} rounded-md p-3 w-full outline-none focus:border-2"
+                [type]="hide ? 'password' : 'text'" formControlName="password" placeholder="Enter your password">
+            <button type="button" (click)="hide = !hide" class="absolute right-3 top-3">
+                <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+            </button>
+        </div>
+        @if (loginForm.get('password')!.touched && loginForm.controls['password'].hasError('passwordInvalid') ) {
+        <small class="text-red-500 leading-3">{{ loginForm.controls['password'].getError('passwordInvalid').message
+            }}</small>
+        }
+        <span class="w-full text-right mt-4 font-bold text-greyscale-9 text-xs"><a
+                [routerLink]="['/auth', 'forgot-password']">Forgot Password?</a></span>
+        <app-custom-primary-button [disabled]="loginForm.invalid" [loading]="loading" type="submit" class="mt-4">
+            Log In
+        </app-custom-primary-button>
+        <span class="flex items-center justify-center mt-5 text-xs">
+            <span class="text-greyscale-9">Don't have an account? </span>
+            <span class="ml-1 font-bold text-primary-500"><a [routerLink]="['/auth', 'register']">Sign Up</a></span>
+        </span>
+    </form>
+</main>
