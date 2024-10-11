@@ -12,6 +12,7 @@ export interface TimeSlot {
 
 export interface IndividualDoctorSchedule {
   doctorID: string;
+  doctorFirstName?: string,
   timeSlots: TimeSlot[];
 }
 

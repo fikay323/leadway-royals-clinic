@@ -1,7 +1,7 @@
 <section>
-    <section class="max-w-full overflow-x-auto">
-        <div *ngFor="let doctor of doctorsSchedules">
-            <h2>{{ doctor.doctorID }}'s Schedule</h2>
+    <div *ngFor="let doctor of doctorsSchedules">
+        <h2>Dr {{ doctor.doctorFirstName }}'s Schedule</h2>
+        <section *ngIf="doctor" class="max-w-full overflow-x-auto">
             <table class="w-full border-collapse mb-6">
               <thead>
                 <tr>
@@ -28,7 +28,7 @@
                 </tr>
               </tbody>
             </table>
-          </div>
+        </section>
+    </div>
           
-    </section>
 </section>
