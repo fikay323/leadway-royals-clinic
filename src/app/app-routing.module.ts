@@ -6,6 +6,10 @@ import { RegisterComponent } from './features/auth/partials/register/register.co
 import { AuthComponent } from './features/auth/auth.component';
 import { ShellComponent } from './features/shell/shell.component';
 import { TestRouteComponent } from './features/shell/partials/test-route/test-route.component';
+import { DashboardComponent } from './features/dashboard/dashboard.component';
+import { loggedInGuard } from './shared/guards/logged-in.guard';
+import { SettingsComponent } from './features/settings/settings.component';
+import { EditProfileComponent } from './features/settings/partials/edit-profile/edit-profile.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/main-app', pathMatch: 'full' },
@@ -16,10 +20,12 @@ const routes: Routes = [
   ] },
   { path: 'main-app', component: ShellComponent, children: [
     { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-    { path: 'dashboard', component: TestRouteComponent },
-    { path: 'settings', component: TestRouteComponent },
+    { path: 'dashboard', component: DashboardComponent },
+    { path: 'settings', component: SettingsComponent, children: [
+      { path: 'edit-profile', component: EditProfileComponent }
+    ] },
     { path: 'chats', component: TestRouteComponent },
-  ] }
+  ], canActivate: [loggedInGuard] }
 ];
 
 @NgModule({

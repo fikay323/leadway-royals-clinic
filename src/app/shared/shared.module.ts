@@ -6,11 +6,11 @@ import { FormsModule } from '@angular/forms';
 import { MaterialModule } from './material.module';
 import { CustomPrimaryButtonComponent } from './components/custom-primary-button/custom-primary-button.component';
 import { IconComponent } from './components/icon/icon.component';
+import { DateFormatterPipe } from './pipes/date-formatter.pipe';
 
 
 const declarations: any[] = [
-  // CurrencyFormatterDirective, 
-  // NumbersOnlyDirective
+  DateFormatterPipe
 ]
 
 const modules: any[] = [

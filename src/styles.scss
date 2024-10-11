@@ -83,6 +83,14 @@ input:-webkit-autofill:active {
     font-size: 7px;
 }
 
+.label-styles {
+    @apply text-xs font-medium mb-1 mt-3;
+}
+
+.input-styles {
+    @apply text-xs border rounded-md px-2 py-3 outline-none focus:border-2;
+}
+
 @keyframes spinner {
     to {
         transform: rotate(360deg);

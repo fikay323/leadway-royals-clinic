@@ -25,7 +25,8 @@ export class AuthService {
       firstName: 'Fikayomi',
       lastName: 'Fagbenro',
       role: 'patient',
-      email: 'sunday@gmail.com'
+      email: 'sunday@gmail.com',
+      phoneNumber: '09060640930'
     }
     this._user$.next(dummyUser)
   }

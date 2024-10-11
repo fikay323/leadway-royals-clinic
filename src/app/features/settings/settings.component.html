@@ -1,0 +1,15 @@
+<section class="px-4 flex flex-col gap-8">
+    <span class="text-xl font-semibold text-black text-opacity-[88%] font-inter hidden md:flex">Settings</span>
+    <section class="flex gap-12 lg:gap-24">
+        <section class="md:hidden fixed bg-white top-0 left-0 w-full min-h-full">
+            <app-settings-menu-mobile></app-settings-menu-mobile>
+        </section>
+        <section class="hidden flex-1 md:flex max-w-[400px]">
+            <app-settings-menu-desktop class="w-full"></app-settings-menu-desktop>
+        </section>
+    
+        <section *ngIf="isEditProfileRoute ||  !{isMobile: isMobile$ | async} as data" class="flex-1 bg-white md:bg-transparent fixed overflow-y-auto md:overflow-y-visible md:static top-0 left-0 w-full h-full px-4 pt-4">
+            <router-outlet></router-outlet>
+        </section>
+    </section>
+</section>

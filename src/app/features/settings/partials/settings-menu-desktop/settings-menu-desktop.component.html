@@ -1,0 +1,23 @@
+<section class="flex max-w-[400px] flex-col">
+    <span class="flex flex-col gap-1 font-inter">
+        <span class="font-medium text-black text-opacity-[88%]">Edit Profile</span>
+        <span class="text-black text-opacity-45 text-xs font-medium">Change your profile details</span>
+    </span>
+    <section class="flex flex-col gap-5 mt-4">
+        <section class="font-inter">
+            <span class="text-black text-opacity-45 text-xs font-medium">Profile</span>
+            <section class="flex items-center mt-2 px-3 cursor-pointer" [routerLink]="['/main-app', 'settings', 'edit-profile']" routerLinkActive="active" #rlaProfile="routerLinkActive">
+                <span class="bg-greyscale-3 p-3 rounded-full" routerLinkActive="bg-primary-50">
+                    <app-icon iconType="userIconFilled" class="ml-auto"
+                        [iconFill]="rlaProfile.isActive ? 'fill-primary-500' : 'fill-greyscale-7'"
+                    ></app-icon>
+                </span>
+                <section class="flex flex-col text-greyscale-7 ml-3">
+                    <span class="text-base" routerLinkActive="text-primary-500">Edit Profile</span>
+                    <span class="text-black text-opacity-45 text-xs font-medium">Edit your profile here</span>
+                </section>
+                <app-icon iconType="caretArrowRight" class="ml-auto"></app-icon>
+            </section>
+        </section>
+    </section>
+</section>

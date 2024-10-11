@@ -1,0 +1,85 @@
+<section class="font-inter w-full max-w-[85%] md:max-w-[350px] m-auto">
+    <section class="mt-8 mb-5 cursor-pointer md:hidden">
+        <a routerLink="../">
+            <app-icon iconType="arrowLeft"></app-icon>
+        </a>
+    </section>
+    <form [formGroup]="personalInformationForm" class="flex flex-col font-inter" (ngSubmit)="onSubmit()">
+        <section class="flex flex-col" formGroupName="personalInformation">
+            <span class="text-lg font-semibold">Personal Information</span>
+            <label class="label-styles">Full Name:</label>
+            <input class="input-styles" formControlName="fullName" type="text" placeholder="Enter full name">
+            
+            <label class="label-styles">Date of Birth:</label>
+            <input class="input-styles" formControlName="dateOfBirth" type="date" placeholder="Select date of birth">
+            
+            <label class="label-styles">Gender:</label>
+            <input class="input-styles" formControlName="gender" type="text" placeholder="Enter gender">
+            
+            <label class="label-styles">Age:</label>
+            <input class="input-styles" formControlName="age" type="number" placeholder="Enter age">
+            
+            <label class="label-styles">Address:</label>
+            <input class="input-styles" formControlName="address" type="text" placeholder="Enter address">
+            
+            <label class="label-styles">Phone Number:</label>
+            <input class="input-styles" formControlName="phoneNumber" type="text" placeholder="Enter phone number">
+        </section>
+      
+        <section class="flex flex-col mt-4" formGroupName="medicalHistory">
+            <span class="text-lg font-semibold">Medical History</span>
+            <div class="flex flex-col" formArrayName="pastMedicalConditions">
+              <label class="label-styles">Past Medical Conditions:</label>
+              <div class="flex gap-2 items-center mb-1" *ngFor="let condition of pastMedicalConditions.controls; let i = index">
+                <input class="input-styles flex-1" [formControlName]="i" type="text" placeholder="Enter past medical condition">
+                <app-icon iconType="close" class="px-2 cursor-pointer" (click)="removePastMedicalCondition(i)"></app-icon>
+              </div>
+              <app-custom-primary-button type="button" (click)="addPastMedicalCondition()">
+                Add Condition
+              </app-custom-primary-button>
+            </div>
+          
+            <div class="flex flex-col" formArrayName="currentMedications">
+              <label class="label-styles">Current Medications:</label>
+              <div class="flex gap-2 items-center mb-1" *ngFor="let medication of currentMedications.controls; let i = index">
+                <input class="input-styles flex-1" [formControlName]="i" type="text" placeholder="Enter current medications">
+                <app-icon iconType="close" class="px-2 cursor-pointer" (click)="removeCurrentMedication(i)"></app-icon>
+              </div>
+              <app-custom-primary-button type="button" (click)="addCurrentMedication()">
+                Add Medication
+              </app-custom-primary-button>
+            </div>
+          
+            <div class="flex flex-col" formArrayName="allergies">
+              <label class="label-styles">Allergies:</label>
+              <div class="flex gap-2 items-center mb-1" *ngFor="let allergy of allergies.controls; let i = index">
+                <input class="input-styles flex-1" [formControlName]="i" type="text" placeholder="Enter allergy">
+                <app-icon iconType="close" class="px-2 cursor-pointer" (click)="removePastMedicalCondition(i)"></app-icon>
+              </div>
+              <app-custom-primary-button type="button" (click)="addAllergy()">
+                Add Allergy
+              </app-custom-primary-button>
+            </div>
+        </section>
+
+        <section class="flex flex-col mt-4" formGroupName="vitalSigns">
+            <span class="text-lg font-semibold">Vital Signs</span>
+            <label class="label-styles">Blood Pressure:</label>
+            <input class="input-styles" formControlName="bloodPressure" type="text" placeholder="Enter blood pressure">
+            
+            <label class="label-styles">Temperature:</label>
+            <input class="input-styles" formControlName="temperature" type="text" placeholder="Enter temperature">
+            
+            <label class="label-styles">Heart Rate:</label>
+            <input class="input-styles" formControlName="heartRate" type="text" placeholder="Enter heart rate">
+            
+            <label class="label-styles">Weight:</label>
+            <input class="input-styles" formControlName="weight" type="text" placeholder="Enter weight">
+        </section>
+      
+      
+        <app-custom-primary-button [disabled]="personalInformationForm.invalid" [loading]="loading" type="submit" class="my-4">
+            Save
+        </app-custom-primary-button>
+    </form>
+</section>

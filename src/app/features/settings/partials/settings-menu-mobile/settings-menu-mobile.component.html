@@ -1,0 +1,41 @@
+<section class="px-4">
+    <section class="mt-8 mb-8">
+        <a routerLink="/main-app/dashboard" class="cursor-pointer">
+            <app-icon iconType="arrowLeft"></app-icon>
+        </a>
+    </section>
+    <section class="font-archivo flex flex-col gap-4 pt-0 pb-5 border-b border-[#DBDCDC]">
+        <section class="flex gap-6 items-center">
+            <span class="relative w-fit">
+                <div class="w-20 h-20 rounded-full overflow-hidden">
+                    <img class="w-20 h-20" src="assets/jpg/avatar.jpg" alt="">
+                </div>
+                <app-icon class="absolute bottom-0 -right-2" iconType="camera"></app-icon>
+            </span>
+            <section class="flex flex-col gap-2">
+                <span class="text-xl font-bold"> {{ userNameAndEmail.name }}</span>
+                <span>User</span>
+            </section>
+        </section>
+        <span *ngIf="userNameAndEmail.name" class="flex items-center gap-3 text-greyscale-8 text-xs">
+            <app-icon iconType="message"></app-icon>
+            <span>{{ userNameAndEmail.email }}</span>
+        </span>
+    </section>
+    <section class="mt-5 font-archivo flex flex-col gap-5">
+        <span class="flex items-center gap-3 cursor-pointer" [routerLink]="['/main-app', 'settings', 'edit-profile']">
+            <span class="bg-primary-50 p-2 rounded-md">
+                <app-icon iconType="profile"></app-icon>
+            </span>
+            <span class="text-[#353738] font-medium">Edit Profile</span>
+            <app-icon iconType="caretArrowRight" iconHeight="h-14" class="ml-auto"></app-icon>
+        </span>
+        <span class="flex items-center gap-3 cursor-pointer">
+            <span class="bg-primary-50 p-2 rounded-md">
+                <app-icon iconType="login"></app-icon>
+            </span>
+            <span class="text-[#353738] font-medium">Logout</span>
+            <app-icon iconType="caretArrowRight" iconHeight="h-14" class="ml-auto"></app-icon>
+        </span>
+    </section>
+</section>
