@@ -10,6 +10,7 @@ import { DashboardComponent } from './features/dashboard/dashboard.component';
 import { loggedInGuard } from './shared/guards/logged-in.guard';
 import { SettingsComponent } from './features/settings/settings.component';
 import { EditProfileComponent } from './features/settings/partials/edit-profile/edit-profile.component';
+import { SchedulesComponent } from './features/schedules/schedules.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/main-app', pathMatch: 'full' },
@@ -25,6 +26,7 @@ const routes: Routes = [
       { path: 'edit-profile', component: EditProfileComponent }
     ] },
     { path: 'chats', component: TestRouteComponent },
+    { path: 'schedules', component: SchedulesComponent },
   ], canActivate: [loggedInGuard] }
 ];
 

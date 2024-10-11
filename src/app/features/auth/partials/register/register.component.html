@@ -1,8 +1,32 @@
 <main class="h-fit font-mullish">
     <form class="flex flex-col" [formGroup]="registerForm" (ngSubmit)="submitForm()">
-        <span class="text-2xl font-semibold mb-7">{{ isIndividual ? 'Individual' : 'Corporate' }} Account</span>
+        <span class="text-2xl font-semibold mb-7">Register Account</span>
 
-        <label class="text-xs mb-1">Phone Number</label>
+        <label class="text-xs mb-1">First Name</label>
+        <input
+         class="text-xs border {{ registerForm.controls['firstName'].touched && (registerForm.controls['firstName'].hasError('required') || registerForm.controls['firstName'].hasError('minLength')) ? 'border-red-500 bg-red-100' : 'border-borderColor bg-transparent' }} rounded-md px-2 py-3 outline-none focus:border-2"
+         placeholder="Enter your first name"
+         formControlName="firstName"
+         type="text"
+         required
+        >
+        @if (registerForm.controls['firstName'].touched && (registerForm.controls['firstName'].hasError('required')) ) {
+            <small class="text-red-500 leading-3">Input a valid phone number</small>
+        }
+
+        <label class="text-xs mt-3 mb-1">Last Name</label>
+        <input
+         class="text-xs border {{ registerForm.controls['lastName'].touched && (registerForm.controls['lastName'].hasError('required') || registerForm.controls['lastName'].hasError('minLength')) ? 'border-red-500 bg-red-100' : 'border-borderColor bg-transparent' }} rounded-md px-2 py-3 outline-none focus:border-2"
+         placeholder="Enter your last name"
+         formControlName="lastName"
+         type="text"
+         required
+        >
+        @if (registerForm.controls['lastName'].touched && (registerForm.controls['lastName'].hasError('required'))) {
+            <small class="text-red-500 leading-3">Input a valid phone number</small>
+        }
+
+        <label class="text-xs mt-3 mb-1">Phone Number</label>
         <input
          class="text-xs border {{ registerForm.controls['phoneNumber'].touched && (registerForm.controls['phoneNumber'].hasError('required') || registerForm.controls['phoneNumber'].hasError('minLength')) ? 'border-red-500 bg-red-100' : 'border-borderColor bg-transparent' }} rounded-md px-2 py-3 outline-none focus:border-2"
          placeholder="08012345678"

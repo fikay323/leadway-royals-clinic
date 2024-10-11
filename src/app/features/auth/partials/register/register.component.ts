@@ -6,6 +6,7 @@ import { passwordValidator } from '../../../../shared/validators/password.valida
 import { Router } from '@angular/router';
 import { registerRequest } from '../../../../shared/models/auth.model';
 import { NotificationService } from '../../../../shared/services/notification.service';
+import { ScheduleService } from '../../../../shared/services/schedule.service';
 
 @Component({
   selector: 'app-register',
@@ -22,14 +23,15 @@ export class RegisterComponent {
     phoneNumber: ['', [Validators.required, Validators.minLength(11)]],
     email: ['', [Validators.required, Validators.email]],
     password: ['Boss@12345', [Validators.required, passwordValidator]],
-    role: ['', [Validators.required]]
+    role: ['', [Validators.required]],
+    firstName: ['', Validators.required],
+    lastName: ['', Validators.required]
   });
   
   constructor(
     private authService: AuthService,
     private router: Router,
     private formBuilder: FormBuilder,
-    private notificationService: NotificationService
   ) {}
 
   ngOnInit(): void {
@@ -40,15 +42,8 @@ export class RegisterComponent {
   submitForm() {
     this.loading = true;
     const registerFormData = this.registerForm.value as registerRequest
-    this.authService.registerUser(registerFormData).subscribe({
-      next: (res) => {
-        console.log(res)
-        this.loading = false
-        this.notificationService.alertSuccess('Account Registered Successfully')
-      }, 
-      error: (error) => {
-        this.loading = false
-      }
+    this.authService.registerUser(registerFormData).subscribe(res => {
+      this.loading = false
     })
   }
 

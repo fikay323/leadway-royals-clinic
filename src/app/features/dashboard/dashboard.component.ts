@@ -11,7 +11,7 @@ import { Observable } from 'rxjs';
 export class DashboardComponent {
   user$ = this.authService.user$
   personalInformation: InformationForm
-  personalInformation$: Observable<InformationForm> = this.profileService.getPersonalInformation()
+  personalInformation$: Observable<InformationForm> = this.profileService.getPersonalInformation(this.user$)
 
   constructor(private authService: AuthService, private profileService: ProfileService) {}
 

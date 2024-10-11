@@ -40,16 +40,8 @@ export class LoginComponent {
   onUserLogin() {
     this.loading = true;
     const loginData = this.loginForm.value as loginRequest;
-    this.authService.login(loginData).subscribe({
-      next: (result) => {
-        this.loading = false;
-        this.notificationService.alertSuccess('Login Successful')
-        this.router.navigate(['/main-app', 'dashboard'])
-        console.log(result)
-      },
-      error: (error) => {
-        this.loading = false;
-      }
+    this.authService.login(loginData).subscribe(res => {
+      this.loading = false;
     })
   }
 }

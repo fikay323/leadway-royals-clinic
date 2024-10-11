@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { InformationForm, ProfileService } from '../../../../shared/services/profile.service';
 import { Observable } from 'rxjs';
 import { Router } from '@angular/router';
+import { AuthService } from '../../../../shared/services/auth.service';
 
 @Component({
   selector: 'app-edit-profile',
@@ -12,7 +13,7 @@ import { Router } from '@angular/router';
 export class EditProfileComponent {
   loading = false
   personalInformation: InformationForm
-  personalInformation$: Observable<InformationForm> = this.profileService.getPersonalInformation()
+  personalInformation$: Observable<InformationForm> = this.profileService.getPersonalInformation(this.authService.user$)
   personalInformationForm = this.formBuilder.group({
     'personalInformation': this.formBuilder.group({
       'fullName': ['', Validators.required],
@@ -37,6 +38,7 @@ export class EditProfileComponent {
 
   constructor(
     private profileService: ProfileService,
+    private authService: AuthService,
     private formBuilder: FormBuilder,
     private router: Router
   ) {}
@@ -146,7 +148,7 @@ export class EditProfileComponent {
         weight: vitalSigns.weight,
       },
     };
-    this.profileService.updatePersonalInformation(formData)
+    // this.profileService.updatePersonalInformation(formData)
     this.router.navigate(['/main-app', 'settings'])
   }
 }

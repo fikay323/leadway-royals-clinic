@@ -1,0 +1,34 @@
+<section>
+    <section class="max-w-full overflow-x-auto">
+        <div *ngFor="let doctor of doctorsSchedules">
+            <h2>{{ doctor.doctorID }}'s Schedule</h2>
+            <table class="w-full border-collapse mb-6">
+              <thead>
+                <tr>
+                  <th class="border p-2">Time</th>
+                  <th class="border p-2" *ngFor="let day of businessDays">{{ day | date: 'fullDate' }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Iterate over each hour slot from 9 AM to 12 PM -->
+                <tr *ngFor="let slot of timeSlots">
+                  <td class="border p-2">{{ slot.startTime }} - {{ slot.endTime }}</td>
+                  <!-- For each time slot, iterate over the days and mark booked or available -->
+                  <td
+                    *ngFor="let day of businessDays"
+                    class="border p-2 text-center cursor-pointer"
+                    [ngClass]="{
+                      'bg-red-200': isBooked(day, slot, doctor),
+                      'bg-white': !isBooked(day, slot, doctor)
+                    }"
+                    (click)="bookSlot(day, slot, doctor)"
+                  >
+                    {{ isBooked(day, slot, doctor) ? 'Booked' : 'Available' }}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          
+    </section>
+</section>

@@ -5,5 +5,7 @@ export interface loginRequest {
 
 export interface registerRequest extends loginRequest {
     phoneNumber: string,
-    role: string
+    role: string,
+    firstName: string,
+    lastName: string,
 }

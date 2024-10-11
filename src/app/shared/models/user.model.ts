@@ -1,3 +1,5 @@
+import { InformationForm } from "../services/profile.service";
+
 export type Role = 'doctor' | 'patient'
 export interface User {
     firstName: string,
@@ -5,5 +7,6 @@ export interface User {
     phoneNumber: string,
     uid: string;
     email: string;
-    role: Role
+    role: Role,
+    personalInformation?: InformationForm
 }

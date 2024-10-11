@@ -23,7 +23,8 @@ import { SettingsComponent } from './features/settings/settings.component';
 import { EditProfileComponent } from './features/settings/partials/edit-profile/edit-profile.component';
 import { SettingsMenuDesktopComponent } from './features/settings/partials/settings-menu-desktop/settings-menu-desktop.component';
 import { SettingsMenuMobileComponent } from './features/settings/partials/settings-menu-mobile/settings-menu-mobile.component';
-import { environment } from '../environments/environment'
+import { environment } from '../environments/environment';
+import { SchedulesComponent } from './features/schedules/schedules.component'
 
 @NgModule({
   declarations: [
@@ -39,7 +40,8 @@ import { environment } from '../environments/environment'
     SettingsComponent,
     EditProfileComponent,
     SettingsMenuDesktopComponent,
-    SettingsMenuMobileComponent
+    SettingsMenuMobileComponent,
+    SchedulesComponent
   ],
   imports: [
     BrowserModule,

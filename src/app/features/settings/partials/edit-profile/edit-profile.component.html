@@ -14,7 +14,11 @@
             <input class="input-styles" formControlName="dateOfBirth" type="date" placeholder="Select date of birth">
             
             <label class="label-styles">Gender:</label>
-            <input class="input-styles" formControlName="gender" type="text" placeholder="Enter gender">
+            <select class="input-styles" formControlName="gender">
+                <option disabled value="">Enter gender</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+            </select>
             
             <label class="label-styles">Age:</label>
             <input class="input-styles" formControlName="age" type="number" placeholder="Enter age">
