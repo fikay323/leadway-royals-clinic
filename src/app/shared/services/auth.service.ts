@@ -1,11 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { catchError, from, merge, Observable, of, switchMap, throwError } from 'rxjs';
-import * as firebase from 'firebase/app';
+import { BehaviorSubject, catchError, from, Observable, of, Subject, tap } from 'rxjs';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
-import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/compat/firestore';
 
-import { User } from '../models/user.model';
+import { Role, User } from '../models/user.model';
 import { ErrorHandlerService } from './error-handler.service';
 import { loginRequest, registerRequest } from '../models/auth.model';
 
@@ -14,33 +12,33 @@ import { loginRequest, registerRequest } from '../models/auth.model';
 })
 export class AuthService {
 
-  user$: Observable<User>;
+  private _user$: Subject<User> = new BehaviorSubject<User>(null);
+  user$ = this._user$.asObservable()
 
   constructor(
     private afAuth: AngularFireAuth,
-    private afs: AngularFirestore,
     private router: Router,
     private errorHandlerService: ErrorHandlerService
   ) {
-    this.user$ = this.afAuth.authState.pipe(
-      switchMap(user => {
-        if(user) return afs.doc<User>(`users/${user.uid}`).valueChanges()
-        return of(null)
-      })
-    )
+    const dummyUser: User = {
+      uid: 'iicisc',
+      firstName: 'Fikayomi',
+      lastName: 'Fagbenro',
+      role: 'patient',
+      email: 'sunday@gmail.com'
+    }
+    this._user$.next(dummyUser)
   }
 
-  private updateUserData(user) {
-    const userRef: AngularFirestoreDocument<any> = this.afs.doc(`users/${user.uid}`)
-    const data: User = {
-      uid: user.uid,
-      email: user.email,
-      role: {
-        doctor: true
-      }
-    }
-    return userRef.set(data, { merge: true })
-  }
+  // private updateUserData(user: User) {
+  //   const userRef: AngularFirestoreDocument<any> = this.afs.doc(`users/${user.uid}`)
+  //   const data: User = {
+  //     uid: user.uid,
+  //     email: user.email,
+  //     role: user.role
+  //   }
+  //   return userRef.set(data, { merge: true })
+  // }
 
   registerUser(registerUserData: registerRequest): Observable<any> {
     return from(this.afAuth.createUserWithEmailAndPassword(registerUserData.email, registerUserData.password)).pipe(
@@ -49,6 +47,10 @@ export class AuthService {
         return of(null)
       })
     )
+  }
+
+  setCredentials(userData: User) {
+    this._user$.next(userData)
   }
 
   login({email: email, password: password}: loginRequest): Observable<any> {

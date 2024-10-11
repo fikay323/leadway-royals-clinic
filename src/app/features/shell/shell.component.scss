@@ -1,0 +1,20 @@
+mat-drawer-container {
+    min-height: 100vh;
+}
+mat-drawer {
+    width: 30%;
+    max-width: 330px;
+    position: fixed;
+    top: 0;
+}
+mat-drawer-content {
+    height: 100%;
+    overflow: visible !important;
+}
+
+@media (max-width: 600px) {
+    mat-drawer {
+        width: 85% !important;
+        min-width: 300px;
+    }    
+}

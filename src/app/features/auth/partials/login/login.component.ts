@@ -44,6 +44,7 @@ export class LoginComponent {
       next: (result) => {
         this.loading = false;
         this.notificationService.alertSuccess('Login Successful')
+        this.router.navigate(['/main-app', 'dashboard'])
         console.log(result)
       },
       error: (error) => {

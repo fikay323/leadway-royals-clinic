@@ -1,1 +1,14 @@
-<p>shell works!</p>
+<mat-drawer-container *ngIf="{isMobile: isMobile$ | async} as data" class="example-container"
+    [hasBackdrop]="hasBackdrop">
+    <mat-drawer #drawer [opened]="opened" [mode]="mode">
+        <app-sidenav (closeSidenav)="drawer.toggle()"></app-sidenav>
+    </mat-drawer>
+    <mat-drawer-content>
+        <div class="min-h-screen">
+            <app-navbar (openSidenav)="drawer.toggle()"></app-navbar>
+            <div class="max-w-screen-xl 2xl:mx-auto px-2 md:px-6 py-4 flex-none">
+                <router-outlet></router-outlet>
+            </div>
+        </div>
+    </mat-drawer-content>
+</mat-drawer-container>

@@ -16,6 +16,10 @@ import { AuthComponent } from './features/auth/auth.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SharedModule } from './shared/shared.module';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { SidenavComponent } from './features/shell/partials/sidenav/sidenav.component';
+import { NavbarComponent } from './features/shell/partials/navbar/navbar.component';
+import { TestRouteComponent } from './features/shell/partials/test-route/test-route.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
 
 @NgModule({
   declarations: [
@@ -24,6 +28,10 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
     AuthComponent,
     LoginComponent,
     RegisterComponent,
+    SidenavComponent,
+    NavbarComponent,
+    TestRouteComponent,
+    DashboardComponent,
   ],
   imports: [
     BrowserModule,

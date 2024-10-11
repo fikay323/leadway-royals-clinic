@@ -1,16 +1,24 @@
-import { Component, NgModule } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AppComponent } from './app.component';
 import { LoginComponent } from './features/auth/partials/login/login.component';
 import { RegisterComponent } from './features/auth/partials/register/register.component';
 import { AuthComponent } from './features/auth/auth.component';
+import { ShellComponent } from './features/shell/shell.component';
+import { TestRouteComponent } from './features/shell/partials/test-route/test-route.component';
 
 const routes: Routes = [
-  { path: '', component: AppComponent },
+  { path: '', redirectTo: '/main-app', pathMatch: 'full' },
   { path: 'auth', component: AuthComponent, children: [
     { path: '', component: LoginComponent },
     { path: 'login', component: LoginComponent },
     { path: 'register', component: RegisterComponent }
+  ] },
+  { path: 'main-app', component: ShellComponent, children: [
+    { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+    { path: 'dashboard', component: TestRouteComponent },
+    { path: 'settings', component: TestRouteComponent },
+    { path: 'chats', component: TestRouteComponent },
   ] }
 ];
 

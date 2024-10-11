@@ -1,0 +1,17 @@
+<section class="px-3 py-2 sm:px-6 sm:py-4 flex items-center">
+    <span (click)="input.focus()" class="hidden lg:flex items-center justify-center p-2 text-md gap-2 border border-[#D9D9D9] w-[250px] lg:w-[400px] rounded-lg text-[#000000] text-opacity-15">
+        <mat-icon>search</mat-icon>
+        <input #input mat-input type="text" class="outline-none w-full bg-transparent" placeholder="Search anything here">
+    </span>
+    <span class="cursor-pointer block lg:hidden" (click)="openNav()"><img src="assets/svg/menu.svg" alt=""></span>
+    <span class="flex gap-3 ml-auto">
+        <a routerLink="/main-app/settings/edit-profile" class="cursor-pointer">
+            <img class="hidden lg:block cursor-pointer" src="assets/svg/settings.svg" alt="">
+        </a>
+        <a routerLink="/main-app/settings" class="cursor-pointer lg:hidden">
+            <div class="w-10 h-10 rounded-full overflow-hidden">
+                <img class="w-10 h-10" src="assets/jpg/avatar.jpg" alt="">
+            </div>
+        </a>
+    </span>
+</section>

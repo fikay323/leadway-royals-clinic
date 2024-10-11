@@ -1,0 +1,16 @@
+<section class="bg-primary-900 w-full h-full flex flex-col items-start text-white px-5 py-6 font-mullish">
+    <ul class="flex flex-col gap-2 mt-7 w-full">
+        <li *ngFor="let item of routes">
+            <a (click)="closeNav(item?.id)" class="flex items-center gap-3 p-2 cursor-pointer" [routerLink]="item?.route" routerLinkActive="bg-[#ffffff] bg-opacity-15 rounded-sm"><img [src]="item?.iconSrc" alt="">{{ item?.label }}</a>
+        </li>
+    </ul>
+    <article (click)="closeNav()" routerLink="/main-app/settings" class="mt-auto items-center gap-3 flex cursor-pointer">
+        <div class="w-10 h-10 rounded-full overflow-hidden">
+            <img class="w-10 h-10" src="assets/jpg/avatar.jpg" alt="">
+        </div>
+        <span class="flex flex-col text-xs leading-5">
+            <span>{{ userNameAndEmail.name }}</span>
+            <span>{{  userNameAndEmail.email  }}</span>
+        </span>
+    </article>
+</section>
