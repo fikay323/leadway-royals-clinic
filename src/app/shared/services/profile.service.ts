@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, catchError, from, map, Observable, of, switchMap, tap } from 'rxjs';
+import { BehaviorSubject, catchError, from, map, Observable, of } from 'rxjs';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 
 import { User } from '../models/user.model';

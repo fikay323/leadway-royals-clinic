@@ -6,7 +6,7 @@ import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { Role, User } from '../models/user.model';
 import { ErrorHandlerService } from './error-handler.service';
 import { loginRequest, registerRequest } from '../models/auth.model';
-import { IndividualDoctorSchedule, ScheduleService } from './schedule.service';
+import { ScheduleService } from './schedule.service';
 import { NotificationService } from './notification.service';
 import { InformationForm, ProfileService } from './profile.service';
 
@@ -14,7 +14,7 @@ import { InformationForm, ProfileService } from './profile.service';
   providedIn: 'root'
 })
 export class AuthService {
-
+  private _CREDENTIALS = 'credentials'
   private _user$: Subject<User> = new BehaviorSubject<User>(null);
   user$ = this._user$.asObservable()
 
@@ -34,7 +34,15 @@ export class AuthService {
       email: 'sunday@gmail.com',
       phoneNumber: '09060640930'
     }
-    this._user$.next(dummyUser)
+    // this._user$.next(dummyUser)
+  }
+
+  autoLogin() {
+    const user = JSON.parse(localStorage.getItem(this._CREDENTIALS))
+    if (user) {
+      this._user$.next(user)
+      return
+    }
   }
 
   registerUser(registerUserData: registerRequest): Observable<any> {
@@ -49,7 +57,7 @@ export class AuthService {
           role: (registerUserData.role) as Role,
           personalInformation: {} as InformationForm
         }
-        this._user$.next(user)
+        this.setCredentials(user)
         this.profileService.createUserWithBasicInfo(user).subscribe()
         this.notificationService.alertSuccess('Account Registered Successfully')
         this.router.navigate(['/main-app', 'dashboard'])
@@ -64,6 +72,7 @@ export class AuthService {
 
   setCredentials(userData: User) {
     this._user$.next(userData)
+    localStorage.setItem(this._CREDENTIALS, JSON.stringify(userData))
   }
 
   login({email: email, password: password}: loginRequest): Observable<any> {
@@ -71,7 +80,7 @@ export class AuthService {
       tap(user => {
         this.profileService.getUserBasicInfo(user.user.uid).subscribe(data => {
           this.notificationService.alertSuccess('Login Successful')
-          this._user$.next(data)
+          this.setCredentials(data)
           this.router.navigate(['/main-app', 'dashboard'])
         })
       }),
