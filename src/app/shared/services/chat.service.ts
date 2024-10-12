@@ -25,18 +25,17 @@ export class ChatService {
     const chatsCollection = this.afs.collection<Chat>('chats');
 
     return from(
-      chatsCollection.ref.where('participants', 'array-contains', doctorID).get()
+      chatsCollection.ref.where('participantIDs', 'array-contains', doctorID).get()
     ).pipe(
       switchMap((querySnapshot) => {
         const existingChat = querySnapshot.docs.find((doc) => {
           const data = doc.data() as Chat;
-          return data.participants.some((p) => p.id === patientID);
+          return data.participantIDs.includes(patientID);
         });
 
         console.log(existingChat)
 
         if (existingChat) {
-          // Chat exists, return the existing chat ID
           return of(existingChat.id);
         } else {
           // Create a new chat
@@ -61,7 +60,7 @@ export class ChatService {
             participantIDs: [doctorID, patientID],
             createdAt: new Date(),
             lastMessage: initialMessage,
-            lastMessageTimestamp: new Date(),
+            lastMessageTimestamp: new Date().toISOString(),
           };
 
           // Add the new chat document
@@ -88,7 +87,7 @@ export class ChatService {
       chatID,
       senderID,
       content,
-      sentAt: new Date(),
+      sentAt: new Date().toISOString(),
       isRead: false,
     };
 
@@ -101,28 +100,47 @@ export class ChatService {
   }
 
   getUserChats(userID: string): Observable<Chat[]> {
-    console.log(userID)
-    return this.afs.collection<Chat>('chats', ref => ref.where('participantIDs', 'array-contains', userID)).valueChanges().pipe(
-      tap(res => {
-        console.log(res)
-      })
-    )
+    return this.afs.collection<Chat>('chats', ref => ref.where('participantIDs', 'array-contains', userID)).valueChanges()
   }
 
   getMessagesForChat(chatID: string): Observable<Message[]> {
     return this.afs.collection<Message>(`chats/${chatID}/messages`, ref => ref.orderBy('sentAt', 'asc')).valueChanges();
   }
 
-  sendMessage(chatID: string, senderID: string, content: string): Observable<void> {
+  sendMessage(
+    chatID: string,
+    senderID: string,
+    content: string
+  ): Observable<void> {
     const message: Message = {
       messageID: this.afs.createId(),
       chatID,
       senderID,
       content,
-      sentAt: new Date(),
+      sentAt: new Date().toISOString(),
       isRead: false,
     };
 
-    return from(this.afs.collection(`chats/${chatID}/messages`).doc(message.messageID).set(message));
+    const messagesCollection = this.afs.collection<Message>(
+      `chats/${chatID}/messages`
+    );
+
+    // Add the message to the messages sub-collection
+    return from(messagesCollection.doc(message.messageID).set(message)).pipe(
+      switchMap(() => {
+        // Update the parent chat document with the last message and timestamp
+        return this.afs
+          .collection<Chat>('chats')
+          .doc(chatID)
+          .update({
+            lastMessage: content,
+            lastMessageTimestamp: new Date().toISOString(),
+          });
+      }),
+      catchError((err) => {
+        this.errorHandlerService.handleError(err);
+        return of(null);
+      })
+    );
   }
 }
