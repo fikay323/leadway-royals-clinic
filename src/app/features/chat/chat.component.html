@@ -1,0 +1,28 @@
+<div class="flex">
+    <!-- Chat list -->
+    <div class="chat-list w-1/3 border-r border-gray-300 cursor-pointer">
+      <div *ngFor="let chat of (chats$ | async)" (click)="selectChat(chat)" class="chat-list-item">
+        <h3>Name</h3>
+        <!-- <h3>{{ getDisplayName(chat.participants.find(p => !p.isDoctor)) }}</h3> -->
+        <p>{{ chat.lastMessage }}</p>
+        <p>{{ chat.lastMessageTimestamp | date:'short' }}</p>
+      </div>
+    </div>
+  
+    <!-- Chat area -->
+    <div class="chat-area w-2/3 p-4">
+      <div *ngIf="selectedChat">
+        <!-- <h2>Chat with {{ getDisplayName(selectedChat.participants.find(p => !p.isDoctor)) }}</h2> -->
+        <div *ngFor="let message of (messages$ | async)">
+          <div [ngClass]="{'text-right': message.senderID === user.uid, 'text-left': message.senderID !== user.uid}" class="mb-2">
+            <span>{{ message.senderID === user.uid ? 'You' : getDisplayName(message.senderID) }}:</span>
+            <p>{{ message.content }}</p>
+          </div>
+        </div>
+  
+        <input [(ngModel)]="messageContent" (keydown.enter)="sendMessage()" class="border w-full rounded" placeholder="Type a message..." />
+        <button (click)="sendMessage()" class="bg-blue-500 text-white rounded p-2">Send</button>
+      </div>
+    </div>
+  </div>
+  

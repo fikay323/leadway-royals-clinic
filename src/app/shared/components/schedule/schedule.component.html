@@ -1,5 +1,6 @@
-<h2 *ngIf="!isDashboard">Dr {{ getFirstLetter(doctorSchedule.doctorFirstName) }}. {{ doctorSchedule.doctorLastName }}'s Schedule for the next 7 days</h2>
-<h2 *ngIf="isDashboard">Your Schedule for the next 7 days</h2>
+<span class="text-2xl font-medium block" *ngIf="!isDashboard">Dr {{ getFirstLetter(doctorSchedule.doctorFirstName) }}. {{ doctorSchedule.doctorLastName }}'s Schedule for the next 7 days</span>
+<button (click)="chatDoctor(doctorSchedule)" *ngIf="!isDashboard && this.doctorSchedule.doctorID !== this.booker.uid" class="text-white font-semibold font-mullish text-xs bg-greyscale-9 rounded-md p-2 my-2 border border-greyscale-12 hover:italic block">Chat with Dr.</button>
+<span class="text-2xl font-medium block" *ngIf="isDashboard">Your Schedule for the next 7 days</span>
 <section *ngIf="doctorSchedule" class="max-w-full overflow-x-auto">
     <table class="w-full border-collapse mb-6">
         <thead>

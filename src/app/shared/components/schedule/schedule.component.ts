@@ -4,7 +4,13 @@ import { map, Observable } from 'rxjs';
 import { IndividualDoctorSchedule, ScheduleService, TimeSlot } from '../../services/schedule.service';
 import { User } from '../../models/user.model';
 import { NotificationService } from '../../services/notification.service';
+import { ChatService } from '../../services/chat.service';
+import { Router } from '@angular/router';
 
+interface name {
+  firstName: string,
+  lastName: string,
+}
 @Component({
   selector: 'app-schedule',
   templateUrl: './schedule.component.html',
@@ -21,10 +27,29 @@ export class ScheduleComponent {
     { startTime: '11:00', endTime: '12:00' },
   ];
 
-  constructor(private scheduleService: ScheduleService, private notificationService: NotificationService) {}
+  constructor(
+    private scheduleService: ScheduleService, 
+    private notificationService: NotificationService,
+    private chatService: ChatService,
+    private router: Router,
+  ) {}
 
   ngOnInit() {
     this.getNextBusinessDays(7)
+  }
+
+  chatDoctor(doctor: IndividualDoctorSchedule) {
+    const doctorName: name = {
+      firstName: doctor.doctorFirstName,
+      lastName: doctor.doctorLastName
+    }
+    const userName: name = {
+      firstName: this.booker.firstName,
+      lastName: this.booker.lastName,
+    }
+    this.chatService.initializeChat(doctor.doctorID, this.booker.uid, doctorName, userName, 'Hello').subscribe(res => {
+      this.router.navigate(['/main-app', 'chats'])
+    })
   }
 
   getFirstLetter(name: string) {

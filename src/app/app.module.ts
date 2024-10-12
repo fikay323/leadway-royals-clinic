@@ -27,6 +27,7 @@ import { SchedulesComponent } from './features/schedules/schedules.component';
 import { DoctorDashboardComponent } from './features/dashboard/partials/doctor-dashboard/doctor-dashboard.component';
 import { PatientDashboardComponent } from './features/dashboard/partials/patient-dashboard/patient-dashboard.component'
 import { environment } from '../environments/environment.development';
+import { ChatComponent } from './features/chat/chat.component';
 
 @NgModule({
   declarations: [
@@ -45,7 +46,8 @@ import { environment } from '../environments/environment.development';
     SettingsMenuMobileComponent,
     SchedulesComponent,
     DoctorDashboardComponent,
-    PatientDashboardComponent
+    PatientDashboardComponent,
+    ChatComponent
   ],
   imports: [
     BrowserModule,
