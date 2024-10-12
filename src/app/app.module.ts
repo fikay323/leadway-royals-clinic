@@ -23,10 +23,10 @@ import { SettingsComponent } from './features/settings/settings.component';
 import { EditProfileComponent } from './features/settings/partials/edit-profile/edit-profile.component';
 import { SettingsMenuDesktopComponent } from './features/settings/partials/settings-menu-desktop/settings-menu-desktop.component';
 import { SettingsMenuMobileComponent } from './features/settings/partials/settings-menu-mobile/settings-menu-mobile.component';
-import { environment } from '../environments/environment';
 import { SchedulesComponent } from './features/schedules/schedules.component';
 import { DoctorDashboardComponent } from './features/dashboard/partials/doctor-dashboard/doctor-dashboard.component';
 import { PatientDashboardComponent } from './features/dashboard/partials/patient-dashboard/patient-dashboard.component'
+import { environment } from '../environments/environment.development';
 
 @NgModule({
   declarations: [

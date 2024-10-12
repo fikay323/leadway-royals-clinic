@@ -61,7 +61,7 @@ export class AuthService {
         this.profileService.createUserWithBasicInfo(user).subscribe()
         this.notificationService.alertSuccess('Account Registered Successfully')
         this.router.navigate(['/main-app', 'dashboard'])
-        if (registerUserData.role === 'doctor') this.scheduleService.createDoctorEntry(res).subscribe()
+        if (registerUserData.role === 'doctor') this.scheduleService.createDoctorEntry(user).subscribe()
       }),
       catchError(error => {
         this.errorHandlerService.handleError(error)

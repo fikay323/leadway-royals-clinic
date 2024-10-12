@@ -7,6 +7,7 @@ import { MaterialModule } from './material.module';
 import { CustomPrimaryButtonComponent } from './components/custom-primary-button/custom-primary-button.component';
 import { IconComponent } from './components/icon/icon.component';
 import { DateFormatterPipe } from './pipes/date-formatter.pipe';
+import { ScheduleComponent } from './components/schedule/schedule.component';
 
 
 const declarations: any[] = [
@@ -23,6 +24,7 @@ const modules: any[] = [
 const components = [
   CustomPrimaryButtonComponent,
   IconComponent,
+  ScheduleComponent
 ]
 
 @NgModule({
