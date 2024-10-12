@@ -1,23 +1,24 @@
+// chat.model.ts
 export interface Participant {
-    id: string;
-    isDoctor: boolean; // True if the participant is a doctor
-    // Add other relevant properties if necessary
     firstName: string;
     lastName: string;
+    id: string;
+    isDoctor: boolean;
   }
   
   export interface Message {
-    content: string;
-    senderID: string;
-    messageID: string;
-    sentAt: Date;
+    sender: string;
+    text: string;
+    timestamp: Date;
+    isPatient: boolean; // true if the sender is a patient
   }
   
   export interface Chat {
     chatID: string;
-    participants: Participant[];
-    lastMessage?: string;
-    lastMessageTimestamp?: Date; // Optional, for tracking the last message time
     createdAt: Date;
+    lastMessage: string;
+    lastMessageTimestamp: Date;
+    participants: Participant[];
+    messages: Message[];
   }
   

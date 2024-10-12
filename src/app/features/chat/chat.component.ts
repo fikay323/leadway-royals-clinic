@@ -13,10 +13,13 @@ import { AuthService } from '../../shared/services/auth.service';
 export class ChatComponent implements OnInit {
   user: User = null;
   user$: Observable<User> = this.authService.user$;
-  chats$: Observable<Chat[]>; // Get all user chats
-  selectedChat: Chat | null = null;
-  messages$: Observable<Message[]> | null = null;
-  messageContent: string = '';
+  
+  chatID: string;
+  chat: Chat;
+  messages: any[] = [];
+  newMessage: string = '';
+  doctor: Participant;
+  chats$: Observable<Chat[]>;
 
   constructor(
     private chatService: ChatService,
@@ -26,36 +29,22 @@ export class ChatComponent implements OnInit {
   ngOnInit(): void {
     this.user$.subscribe(user => {
       this.user = user;
-      this.loadUserChats();
+      this.chats$ = this.chatService.getUserChats(user.uid)
     });
+    this.chats$.subscribe()
   }
-  
-  loadUserChats(): void {
-    this.chats$ = this.chatService.getUserChats(this.user.uid); // Get chats for the current user
-    this.chats$.subscribe(chat => {
-      console.log(chat)
-    })
-  }
-  
-  selectChat(chat: Chat): void {
-    this.selectedChat = chat; // Set selected chat
-    this.loadMessages(chat.chatID); // Load messages for the selected chat
-  }
-  
-  loadMessages(chatID: string): void {
-    this.messages$ = this.chatService.getMessagesForChat(chatID)
+  selectedChat: Chat | null = null;
+
+
+  selectChat(chat: Chat) {
+    this.selectedChat = chat;
   }
 
-  sendMessage(): void {
-    if (this.selectedChat && this.messageContent) {
-      this.chatService.sendMessage(this.selectedChat.chatID, this.messageContent, this.user.uid).subscribe(() => {
-        this.messageContent = ''; // Clear message input
+  sendMessage() {
+    if (this.newMessage.trim() && this.selectedChat) {
+      this.chatService.sendMessage(this.selectedChat.chatID, this.newMessage).subscribe(() => {
+        this.newMessage = ''; // Clear input
       });
     }
-  }
-
-  getDisplayName(senderID: string): string {
-    // Implement logic to return display name based on sender ID
-    return senderID; // Placeholder, update this based on your logic
   }
 }
