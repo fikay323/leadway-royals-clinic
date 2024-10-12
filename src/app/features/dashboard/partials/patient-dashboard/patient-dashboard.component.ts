@@ -1,9 +1,7 @@
-import { Component } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Component, Input } from '@angular/core';
 
-import { InformationForm, ProfileService } from '../../../../shared/services/profile.service';
-import { AuthService } from '../../../../shared/services/auth.service';
-import { User } from '../../../../shared/models/user.model';
+import { InformationForm } from '../../../../shared/services/profile.service';
+import { ScheduleService, TimeSlot, TimeSlotWithDoctorID } from '../../../../shared/services/schedule.service';
 
 @Component({
   selector: 'app-patient-dashboard',
@@ -11,20 +9,25 @@ import { User } from '../../../../shared/models/user.model';
   styleUrl: './patient-dashboard.component.scss'
 })
 export class PatientDashboardComponent {
-  user: User
-  user$ = this.authService.user$
-  personalInformation: InformationForm
-  personalInformation$: Observable<InformationForm> = this.profileService.getPersonalInformation(this.user$)
+  @Input() userInformation: InformationForm 
+  @Input() patientSchedule: TimeSlotWithDoctorID[]
 
-  constructor(private authService: AuthService, private profileService: ProfileService) {}
+  constructor(private scheduleService: ScheduleService) {}
 
-  ngOnInit() {
-    this.personalInformation$.subscribe(info => {
-      this.personalInformation = info
-    })
-    this.user$.subscribe(user => {
-      this.user = user
-    })
+  getFirstLetter(word: string) {
+    return word.substr(0,1)
+  }
+
+  cancelAppointment(item: TimeSlotWithDoctorID) {
+    const appointment: TimeSlot = {
+      slotID: item.slotID,
+      isAvailable: item.isAvailable,
+      startTime: item.startTime,
+      endTime: item.endTime,
+      bookerID: item.bookerID,
+    }
+    console.log(item)
+    this.scheduleService.removeTimeSlot(appointment, null, item.doctorID)
   }
 
 }

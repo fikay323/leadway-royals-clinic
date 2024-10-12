@@ -1,43 +1,43 @@
-<section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3" *ngIf="user.personalInformation.medicalHistory">
+<section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3" *ngIf="userInformation.medicalHistory">
     <section>
         <span class="text-xl font font-semibold font-inter">Personal Information</span>
         <section class="flex flex-col pl-2">
-            <span class="font-medium">Full name: <span class="font-normal">{{ personalInformation.personalInformation.fullName }}</span></span>
-            <span class="font-medium">Date of Birth: <span class="font-normal">{{ personalInformation.personalInformation.dateOfBirth | dateFormat }}</span></span>
-            <span class="font-medium">Gender: <span class="font-normal">{{ personalInformation.personalInformation.gender }}</span></span>
-            <span class="font-medium">Age: <span class="font-normal">{{ personalInformation.personalInformation.age }}</span></span>
-            <span class="font-medium">Address: <span class="font-normal">{{ personalInformation.personalInformation.address }}</span></span>
-            <span class="font-medium">Phone Number: <span class="font-normal">{{ personalInformation.personalInformation.phoneNumber }}</span></span>
+            <span class="font-medium">Full name: <span class="font-normal">{{ userInformation.personalInformation.fullName }}</span></span>
+            <span class="font-medium">Date of Birth: <span class="font-normal">{{ userInformation.personalInformation.dateOfBirth | dateFormat }}</span></span>
+            <span class="font-medium">Gender: <span class="font-normal">{{ userInformation.personalInformation.gender }}</span></span>
+            <span class="font-medium">Age: <span class="font-normal">{{ userInformation.personalInformation.age }}</span></span>
+            <span class="font-medium">Address: <span class="font-normal">{{ userInformation.personalInformation.address }}</span></span>
+            <span class="font-medium">Phone Number: <span class="font-normal">{{ userInformation.personalInformation.phoneNumber }}</span></span>
         </section>
     </section>
     <section>
         <span class="text-xl font font-semibold font-inter">Medical History</span>
         <section class="flex flex-col pl-2">
             <section>
-                <span class="font-medium">Past medical conditions: <span class="font-normal" *ngIf="personalInformation.medicalHistory.pastMedicalConditions.length === 0">None</span></span>
-                @if((personalInformation.medicalHistory.pastMedicalConditions.length) > 0) {
+                <span class="font-medium">Past medical conditions: <span class="font-normal" *ngIf="userInformation.medicalHistory.pastMedicalConditions.length === 0">None</span></span>
+                @if((userInformation.medicalHistory.pastMedicalConditions.length) > 0) {
                     <ul class="list-decimal pl-6">
-                        @for (item of personalInformation.medicalHistory.pastMedicalConditions; track $index) {
+                        @for (item of userInformation.medicalHistory.pastMedicalConditions; track $index) {
                             <li>{{ item }}</li>
                         }
                     </ul>
                 }
             </section>
             <section>
-                <span class="font-medium">Current Medications: <span class="font-normal" *ngIf="personalInformation.medicalHistory.currentMedications.length === 0">None</span></span>
-                @if((personalInformation.medicalHistory.currentMedications.length) > 0) {
+                <span class="font-medium">Current Medications: <span class="font-normal" *ngIf="userInformation.medicalHistory.currentMedications.length === 0">None</span></span>
+                @if((userInformation.medicalHistory.currentMedications.length) > 0) {
                     <ul class="list-decimal pl-6">
-                        @for (item of personalInformation.medicalHistory.currentMedications; track $index) {
+                        @for (item of userInformation.medicalHistory.currentMedications; track $index) {
                             <li>{{ item }}</li>
                         }
                     </ul>
                 }
             </section>
             <section>
-                <span class="font-medium">Allergies: <span class="font-normal" *ngIf="personalInformation.medicalHistory.allergies.length === 0">None</span></span>
-                @if((personalInformation.medicalHistory.allergies.length) > 0) {
+                <span class="font-medium">Allergies: <span class="font-normal" *ngIf="userInformation.medicalHistory.allergies.length === 0">None</span></span>
+                @if((userInformation.medicalHistory.allergies.length) > 0) {
                     <ul class="list-decimal pl-6">
-                        @for (item of personalInformation.medicalHistory.allergies; track $index) {
+                        @for (item of userInformation.medicalHistory.allergies; track $index) {
                             <li>{{ item }}</li>
                         }
                     </ul>
@@ -48,13 +48,24 @@
     <section>
         <span class="text-xl font font-semibold font-inter">Vital Signs</span>
         <section class="flex flex-col pl-2">
-            <span class="font-medium">Blood pressure: <span class="font-normal">{{ personalInformation.vitalSigns.bloodPressure }}</span></span>
-            <span class="font-medium">Tempereature: <span class="font-normal">{{ personalInformation.vitalSigns.temperature }}</span></span>
-            <span class="font-medium">Heart rate: <span class="font-normal">{{ personalInformation.vitalSigns.heartRate }}</span></span>
-            <span class="font-medium">Weight: <span class="font-normal">{{ personalInformation.vitalSigns.weight }}kg</span></span>
+            <span class="font-medium">Blood pressure: <span class="font-normal">{{ userInformation.vitalSigns.bloodPressure }}</span></span>
+            <span class="font-medium">Tempereature: <span class="font-normal">{{ userInformation.vitalSigns.temperature }}</span></span>
+            <span class="font-medium">Heart rate: <span class="font-normal">{{ userInformation.vitalSigns.heartRate }}</span></span>
+            <span class="font-medium">Weight: <span class="font-normal">{{ userInformation.vitalSigns.weight }}kg</span></span>
         </section>
     </section>
 </section>
-<span class="block text-lg font-medium" *ngIf="!user.personalInformation.medicalHistory">
+<section *ngIf="patientSchedule" class="my-3">
+    <span class="text-xl font font-semibold font-inter">Upcoming Schedules</span>
+    <section class="flex flex-col ml-3 gap-2 text-base font-medium">
+        @for(item of patientSchedule; track $index) {
+            <span class="flex items-center gap-3">
+                <span>Dr {{ getFirstLetter(item.doctorFirstName) }}. {{ item.doctorLastName }} on {{ item.startTime | ordinalDateTime }}</span>
+                <mat-icon (click)="cancelAppointment(item)" class="outline rounded-sm font-bold text-white bg-red-600 cursor-pointer" title="Cancel appointment ?">close</mat-icon>
+            </span>
+        }
+    </section>
+</section>
+<span class="block text-lg font-medium" *ngIf="!userInformation.medicalHistory">
     Add your Personal details in settings
 </span>

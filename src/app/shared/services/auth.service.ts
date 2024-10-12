@@ -79,9 +79,11 @@ export class AuthService {
     return from(this.afAuth.signInWithEmailAndPassword(email, password)).pipe(
       tap(user => {
         this.profileService.getUserBasicInfo(user.user.uid).subscribe(data => {
-          this.notificationService.alertSuccess('Login Successful')
-          this.setCredentials(data)
-          this.router.navigate(['/main-app', 'dashboard'])
+          if(data){
+            this.notificationService.alertSuccess('Login Successful')
+            this.setCredentials(data)
+            this.router.navigate(['/main-app', 'dashboard'])
+          }
         })
       }),
       catchError(error => {
@@ -91,12 +93,8 @@ export class AuthService {
     )
   }
 
-  logout(): Observable<any> {
-    return from(this.afAuth.signOut()).pipe(
-      catchError(error => {
-        this.errorHandlerService.handleError(error)
-        return of(null)
-      })
-    )
+  logout() {
+    localStorage.removeItem(this._CREDENTIALS)
+    this._user$.next(null)
   }
 }

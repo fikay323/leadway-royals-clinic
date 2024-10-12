@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import firebase from 'firebase/compat/app'; 
-import { BehaviorSubject, catchError, forkJoin, from, map, Observable, of, switchMap, tap } from 'rxjs';
+import { catchError, forkJoin, from, map, Observable, of, switchMap, tap } from 'rxjs';
 
 import { ErrorHandlerService } from './error-handler.service';
 import { User } from '../models/user.model';
@@ -13,6 +13,12 @@ export interface TimeSlot {
   bookerID: string;
   isAvailable: boolean;     // Availability status (true if the slot is available, false otherwise)
   slotID: string;
+}
+
+export interface TimeSlotWithDoctorID extends TimeSlot {
+  doctorID: string;
+  doctorFirstName: string;
+  doctorLastName: string;
 }
 
 export interface IndividualDoctorSchedule {
@@ -106,8 +112,8 @@ export class ScheduleService {
     )
   }
 
-  removeTimeSlot(timeslot: TimeSlot, doctor: IndividualDoctorSchedule) {
-    const doctorScheduleRef = this.afs.collection('schedules').doc(doctor.doctorID);
+  removeTimeSlot(timeslot: TimeSlot, doctor?: IndividualDoctorSchedule, doctorID?: string) {
+    const doctorScheduleRef = this.afs.collection('schedules').doc(doctor ? doctor.doctorID : doctorID);
 
     return from(doctorScheduleRef.update({
       timeSlots: firebase.firestore.FieldValue.arrayRemove(timeslot)
@@ -143,5 +149,70 @@ export class ScheduleService {
   uploadMultipleSchedules(schedules: IndividualDoctorSchedule[]): Observable<any[]> {
     const uploadObservables = schedules.map(schedule => this.uploadDoctorSchedule(schedule));
     return forkJoin(uploadObservables); // Combine all observables into one
+  }
+
+  // filterTimeSlotsByBookerID(currentUserUID: string): Observable<void> {
+  //   // Reference to the schedules collection
+  //   const schedulesCollectionRef = this.afs.collection('schedules');
+
+  //   // Fetch all schedules
+  //   return schedulesCollectionRef.get().pipe(
+  //     map(querySnapshot => {
+  //       // Map over each document in the collection
+  //       const batch = this.afs.firestore.batch(); // Use a batch write to update multiple docs
+  //       querySnapshot.docs.forEach(doc => {
+  //         const schedule = doc.data() as IndividualDoctorSchedule;
+          
+  //         if (schedule.timeSlots && schedule.timeSlots.length > 0) {
+  //           // Filter the timeSlots array to remove those with matching bookerID
+  //           const updatedTimeSlots = schedule.timeSlots.filter(slot => slot.bookerID !== currentUserUID);
+
+  //           // If there are changes, update the schedule with the new timeSlots array
+  //           if (updatedTimeSlots.length !== schedule.timeSlots.length) {
+  //             const scheduleDocRef = this.afs.collection('schedules').doc(schedule.doctorID).ref;
+  //             batch.update(scheduleDocRef, { timeSlots: updatedTimeSlots });
+  //           }
+  //         }
+  //       });
+
+  //       // Commit the batch update
+  //       return batch.commit(); // This returns a Promise<void>
+  //     }),
+  //     switchMap(batchCommitObservable => from(batchCommitObservable)), // Convert the Promise<void> to Observable<void>
+  //     catchError(err => {
+  //       this.errorHandlerService.handleError(err)
+  //       return of(null)
+  //     }),
+  //     tap(res => {
+  //       // this.notificationService.alertSuccess('Appointment cancelled successfully')
+  //     }),
+  //   )
+  // }
+
+  getAllPatientSchedules(userUID): Observable<TimeSlotWithDoctorID[]> {
+    return this.afs.collection(`schedules`).valueChanges().pipe(
+      map((doctorsSchedule: IndividualDoctorSchedule[]) => {
+        const timeSlots: TimeSlotWithDoctorID[] = []
+        doctorsSchedule.forEach(doctorSchedule => {
+          doctorSchedule.timeSlots.forEach(slot => {
+            if(slot.bookerID === userUID) {
+              const newSlot: TimeSlotWithDoctorID = {
+                ...slot,
+                doctorID: doctorSchedule.doctorID,
+                doctorFirstName: doctorSchedule.doctorFirstName,
+                doctorLastName: doctorSchedule.doctorLastName,
+              }
+              timeSlots.push(newSlot)
+            }
+          })
+        })
+        timeSlots.sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime());
+        return timeSlots
+      }),
+      catchError(err => {
+        this.errorHandlerService.handleError(err)
+        return of(null)
+      })
+    )
   }
 }

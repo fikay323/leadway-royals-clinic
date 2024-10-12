@@ -67,7 +67,7 @@ export class SidenavComponent {
     if (this.isMobile) {
       this.closeSidenav.emit()
     }
-    id == this.LOG_OUT_ID && this.authService.logout();
+    id == this.LOG_OUT_ID && this.authService.logout()
   }
 
 }

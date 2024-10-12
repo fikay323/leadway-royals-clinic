@@ -8,10 +8,12 @@ import { CustomPrimaryButtonComponent } from './components/custom-primary-button
 import { IconComponent } from './components/icon/icon.component';
 import { DateFormatterPipe } from './pipes/date-formatter.pipe';
 import { ScheduleComponent } from './components/schedule/schedule.component';
+import { OrdinalDateTimePipe } from './pipes/ordinal-date.pipe';
 
 
 const declarations: any[] = [
-  DateFormatterPipe
+  DateFormatterPipe,
+  OrdinalDateTimePipe
 ]
 
 const modules: any[] = [
