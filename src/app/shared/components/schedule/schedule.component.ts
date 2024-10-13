@@ -99,7 +99,7 @@ export class ScheduleComponent {
     } else if(isBooked && !isBookedByCurrentUser) {
       this.notificationService.alertError('This session has been booked by another patient, pls book another session')
       return
-    } else if(!this.booker.personalInformation) {
+    } else if(Object.keys(this.booker.personalInformation).length === 0) {
       this.notificationService.alertError('Pls set your personal information in the settings before booking an appointment')
       return
     }
@@ -121,8 +121,6 @@ export class ScheduleComponent {
     } else {
       this.getTheClickedSlotDetailsAndRemove(day, slot, doctor)
     }
-    // Add your booking logic here
-    // console.log(`Booking slot for ${doctor.doctorID} on ${day} from ${slot.startTime} to ${slot.endTime}`);
   }
 
 }

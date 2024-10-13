@@ -5,7 +5,6 @@ import { LoginComponent } from './features/auth/partials/login/login.component';
 import { RegisterComponent } from './features/auth/partials/register/register.component';
 import { AuthComponent } from './features/auth/auth.component';
 import { ShellComponent } from './features/shell/shell.component';
-import { TestRouteComponent } from './features/shell/partials/test-route/test-route.component';
 import { DashboardComponent } from './features/dashboard/dashboard.component';
 import { loggedInGuard } from './shared/guards/logged-in.guard';
 import { SettingsComponent } from './features/settings/settings.component';

@@ -1,5 +1,19 @@
-<section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3" *ngIf="userInformation.medicalHistory">
-    <section>
+<section class="p-2">
+    <section class="bg-primary-900 min-h-[200px] flex flex-col relative justify-center text-white font-mullish p-3 rounded-xl">
+        <span class="text-3xl mb-5 font-bold mt-auto relative">{{ greet() }} {{ user.firstName }}</span>
+        <span class="mb-auto flex flex-col">
+            <span class="block text-lg font-semibold mt-4" *ngIf="!isPersonalInformationPresent()">
+                Add your Personal details in settings
+            </span>
+            <span class="text-base font-semibold mt-2">Welcome to clinic's website, how are you feeling today?</span>
+            <span class="mt-1">Book an appointment with one of doctors today</span>
+            <button routerLink="main-app/schedules" class="bg-white text-primary-900 w-fit font-bold flex items-center p-2 mt-1 rounded-lg">Book an appointment <mat-icon>arrow_right</mat-icon></button>
+        </span>
+        <img class="absolute bottom-0 right-0 hidden lg:block h-[280px]" src="assets/jpg/doctor.png" alt="">
+    </section>
+</section>
+<section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 px-2 py-4" *ngIf="isPersonalInformationPresent()">
+    <section class="shadow-2xl p-5 rounded-lg font-mullish">
         <span class="text-xl font font-semibold font-inter">Personal Information</span>
         <section class="flex flex-col pl-2">
             <span class="font-medium">Full name: <span class="font-normal">{{ userInformation.personalInformation.fullName }}</span></span>
@@ -10,7 +24,16 @@
             <span class="font-medium">Phone Number: <span class="font-normal">{{ userInformation.personalInformation.phoneNumber }}</span></span>
         </section>
     </section>
-    <section>
+    <section class="shadow-2xl p-5 rounded-lg font-mullish">
+        <span class="text-xl font font-semibold font-inter">Vital Signs</span>
+        <section class="flex flex-col pl-2">
+            <span class="font-medium">Blood pressure: <span class="font-normal">{{ userInformation.vitalSigns.bloodPressure }}</span></span>
+            <span class="font-medium">Tempereature: <span class="font-normal">{{ userInformation.vitalSigns.temperature }}</span></span>
+            <span class="font-medium">Heart rate: <span class="font-normal">{{ userInformation.vitalSigns.heartRate }}</span></span>
+            <span class="font-medium">Weight: <span class="font-normal">{{ userInformation.vitalSigns.weight }}kg</span></span>
+        </section>
+    </section>
+    <section class="shadow-2xl p-5 rounded-lg font-mullish">
         <span class="text-xl font font-semibold font-inter">Medical History</span>
         <section class="flex flex-col pl-2">
             <section>
@@ -45,27 +68,15 @@
             </section>
         </section>
     </section>
-    <section>
-        <span class="text-xl font font-semibold font-inter">Vital Signs</span>
-        <section class="flex flex-col pl-2">
-            <span class="font-medium">Blood pressure: <span class="font-normal">{{ userInformation.vitalSigns.bloodPressure }}</span></span>
-            <span class="font-medium">Tempereature: <span class="font-normal">{{ userInformation.vitalSigns.temperature }}</span></span>
-            <span class="font-medium">Heart rate: <span class="font-normal">{{ userInformation.vitalSigns.heartRate }}</span></span>
-            <span class="font-medium">Weight: <span class="font-normal">{{ userInformation.vitalSigns.weight }}kg</span></span>
-        </section>
-    </section>
 </section>
-<section *ngIf="patientSchedule" class="my-3">
+<section *ngIf="patientSchedule.length > 0" class="my-3 px-2 font-mullish w-fit">
     <span class="text-xl font font-semibold font-inter">Upcoming Schedules</span>
     <section class="flex flex-col ml-3 gap-2 text-base font-medium">
         @for(item of patientSchedule; track $index) {
-            <span class="flex items-center gap-3">
+            <span class="flex items-center gap-3 w-full">
                 <span>Dr {{ getFirstLetter(item.doctorFirstName) }}. {{ item.doctorLastName }} on {{ item.startTime | ordinalDateTime }}</span>
-                <mat-icon (click)="cancelAppointment(item)" class="outline rounded-sm font-bold text-white bg-red-600 cursor-pointer" title="Cancel appointment ?">close</mat-icon>
+                <mat-icon (click)="cancelAppointment(item)" class="outline rounded-sm font-bold text-white bg-red-600 cursor-pointer ml-auto" title="Cancel appointment ?">close</mat-icon>
             </span>
         }
     </section>
 </section>
-<span class="block text-lg font-medium" *ngIf="!userInformation.medicalHistory">
-    Add your Personal details in settings
-</span>

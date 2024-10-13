@@ -8,7 +8,7 @@
         <div class="w-10 h-10 rounded-full overflow-hidden">
             <img class="w-10 h-10" src="assets/jpg/avatar.jpg" alt="">
         </div>
-        <span class="flex flex-col text-xs leading-5">
+        <span class="flex flex-col text-xs leading-5" *ngIf="(user$ | async) as user">
             <span>{{ userNameAndEmail.name }}</span>
             <span>{{  userNameAndEmail.email  }}</span>
         </span>

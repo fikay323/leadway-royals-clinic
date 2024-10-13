@@ -178,56 +178,55 @@ export class ScheduleService {
       }),
       catchError(err => {
         this.errorHandlerService.handleError(err)
-        return of(null)
+        return of([])
       })
     )
   }
 
-  getUserSchedulesForMonth(month: number, year: number, currentUser: User): Observable<TimeSlot[]> {
-    const userID = currentUser.uid;
-    const userRole = currentUser.role;
-
-    const startOfMonth = new Date(year, month, 1);
-    const endOfMonth = new Date(year, month + 1, 0);
-
-    if (userRole === 'patient') {
-      return this.afs
-        .collection('schedules')
-        .snapshotChanges()
-        .pipe(
-          map((docs) => {
-            const timeSlots: TimeSlot[] = [];
-            docs.forEach((doc) => {
-              const schedule = doc.payload.doc.data() as any;
-              schedule.timeSlots.forEach((slot: TimeSlot) => {
-                const slotStartDate = new Date(slot.startTime)
-                if (
-                  slot.bookerID === userID &&
-                  slotStartDate.getMonth() === startOfMonth.getMonth() &&
-                  slotStartDate.getFullYear() === startOfMonth.getFullYear()
-                ) {
-                  timeSlots.push(slot);
+  getPatientSchedules(patientID: string, year: number, month: number): Observable<TimeSlotWithDoctorID[]> {
+    return this.afs
+      .collection<IndividualDoctorSchedule>('schedules')
+      .valueChanges()
+      .pipe(
+        map((schedules) => {
+          return schedules
+            .flatMap((schedule) => {
+              return schedule.timeSlots.map(timeslot => {
+                const newSlot: TimeSlotWithDoctorID = {
+                  ...timeslot,
+                  doctorFirstName: schedule.doctorFirstName,
+                  doctorLastName: schedule.doctorLastName,
+                  doctorID: schedule.doctorID
                 }
-              });
-            });
-            return timeSlots;
-          })
-        );
-    } else if (userRole === 'doctor') {
-      return this.afs
-        .collection('schedules')
-        .doc(userID)
-        .valueChanges()
-        .pipe(
-          map((schedule: any) => {
-            const timeSlots = schedule?.timeSlots || [];
-            return timeSlots.filter((slot: TimeSlot) => {
-              return new Date(slot.startTime) >= startOfMonth && new Date(slot.startTime) <= endOfMonth;
-            });
-          })
-        );
-    }
+                return newSlot
+              })
+            })
+            .filter(
+              (slot) => {
+                const slotStartDate = new Date(slot.startTime)
+                return slot.bookerID === patientID &&
+                slotStartDate.getMonth() === month &&
+                slotStartDate.getFullYear() === year
+              })
+        })
+      );
+  }
 
-    return of([]);
+  // Get schedules for a doctor
+  getDoctorSchedules(doctorID: string, year: number, month: number): Observable<TimeSlot[]> {
+    return this.afs
+      .collection<IndividualDoctorSchedule>('schedules')
+      .doc(doctorID)
+      .valueChanges()
+      .pipe(
+        map((schedule: IndividualDoctorSchedule) =>
+          schedule.timeSlots.filter(
+            (slot) => {
+              const slotStartDate = new Date(slot.startTime)
+              return slotStartDate.getMonth() === month &&
+              slotStartDate.getFullYear() === year
+            })
+        )
+      );
   }
 }

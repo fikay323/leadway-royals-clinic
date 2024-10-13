@@ -9,6 +9,8 @@ import { loginRequest, registerRequest } from '../models/auth.model';
 import { ScheduleService } from './schedule.service';
 import { NotificationService } from './notification.service';
 import { InformationForm, ProfileService } from './profile.service';
+import { MessagingService } from './messaging.service';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
 
 @Injectable({
   providedIn: 'root'
@@ -20,11 +22,13 @@ export class AuthService {
 
   constructor(
     private afAuth: AngularFireAuth,
+    private afs: AngularFirestore,
     private router: Router,
     private errorHandlerService: ErrorHandlerService,
     private profileService: ProfileService,
     private scheduleService: ScheduleService,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private messagingService: MessagingService
   ) {}
 
   autoLogin() {
@@ -63,6 +67,9 @@ export class AuthService {
   setCredentials(userData: User) {
     this._user$.next(userData)
     localStorage.setItem(this._CREDENTIALS, JSON.stringify(userData))
+    // this.messagingService.requestPermission().then(token => {
+    //   this.afs.collection('users').doc(userData.uid).update({ fcmToken: token });
+    // })
   }
 
   login({email: email, password: password}: loginRequest): Observable<any> {
@@ -85,6 +92,14 @@ export class AuthService {
 
   logout() {
     localStorage.removeItem(this._CREDENTIALS)
-    this._user$.next(null)
+    // this._user$.next(null)
+    from(this.afAuth.signOut()).subscribe({
+      next: (res) => {
+        this.notificationService.alertSuccess('User logged out successfully')
+      },
+      error: (err) => {
+        this.errorHandlerService.handleError(err)
+      }
+    })
   }
 }

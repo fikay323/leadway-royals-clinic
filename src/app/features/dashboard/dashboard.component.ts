@@ -15,7 +15,7 @@ export class DashboardComponent {
   user$ = this.authService.user$
   personalInformation: InformationForm
   personalInformation$: Observable<InformationForm> = this.profileService.getPersonalInformation(this.user$)
-  userSchedulesWithDoctors: TimeSlotWithDoctorID[]
+  userSchedulesWithDoctors: TimeSlotWithDoctorID[] = []
   userSchedulesWithDoctors$: Observable<TimeSlotWithDoctorID[]>
 
   constructor(
@@ -33,7 +33,9 @@ export class DashboardComponent {
       if(user.role === 'patient') {
         this.userSchedulesWithDoctors$ = this.scheduleService.getAllPatientSchedules(this.user.uid)
         this.userSchedulesWithDoctors$.subscribe(res => {
-           this.userSchedulesWithDoctors = res
+          if(res) {
+            this.userSchedulesWithDoctors = res
+          }
         })
       }
     })

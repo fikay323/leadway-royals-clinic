@@ -24,13 +24,22 @@
                 <tr>
                     <th class="p-3 border-b">Date</th>
                     <th class="p-3 border-b">Time</th>
+                    <th class="p-3 border-b">{{ user.role === 'patient' ? 'Doctor' : 'Patient' }}'s Name</th>
                 </tr>
             </thead>
             <tbody>
                 <tr *ngFor="let slot of timeSlots">
                     <td class="p-3 border-b">{{ slot.startTime | date: 'mediumDate' }}</td>
-                    <td class="p-3 border-b">{{ slot.startTime | date: 'shortTime' }} - {{ slot.endTime | date:
-                        'shortTime' }}</td>
+                    <td class="p-3 border-b">{{ slot.startTime | date: 'shortTime' }} - {{ slot.endTime | date: 'shortTime' }}</td>
+                    <td class="p-3 border-b">
+                        @if(user.role === 'patient') {
+                            <span>Dr. {{ slot.doctorFirstName || 'undisclosed' }} {{ slot.doctorLastName }}</span>
+                            <!-- <span>Dr. {{ displayName(slot.doctorFirstName, slot.doctorLastName) }}</span> -->
+                        } @else {
+                            <span>{{ slot.bookerName.firstName }} {{ slot.bookerName.lastName }}</span>
+                            <!-- <span>{{ displayName(slot.bookerName.firstName, slot.bookerName.lastName) }}</span> -->
+                        }
+                    </td>
                 </tr>
             </tbody>
         </table>

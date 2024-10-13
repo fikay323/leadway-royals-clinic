@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ScheduleService, TimeSlot } from '../../shared/services/schedule.service';
+import { ScheduleService, TimeSlot, TimeSlotWithDoctorID } from '../../shared/services/schedule.service';
 import { AuthService } from '../../shared/services/auth.service';
 import { User } from '../../shared/models/user.model';
 
@@ -9,7 +9,7 @@ import { User } from '../../shared/models/user.model';
   styleUrls: ['./past-schedules.component.scss'],
 })
 export class PastSchedulesComponent implements OnInit {
-  public timeSlots: TimeSlot[] = [];
+  public timeSlots:  Partial<TimeSlotWithDoctorID>[] = [];
   public selectedMonth: number;
   public selectedYear: number;
   public monthYearDisplay: string;
@@ -35,6 +35,10 @@ export class PastSchedulesComponent implements OnInit {
     })
   }
 
+  displayName(firstName: string, lastName: string) {
+    return `${firstName.charAt(0)} ${lastName}`
+  }
+
   onMonthChange(event: any): void {
     this.selectedMonth = event.target.value;
     this.loadSchedules(this.user);
@@ -47,10 +51,19 @@ export class PastSchedulesComponent implements OnInit {
 
   loadSchedules(user: User): void {
     this.monthYearDisplay = `Your appointments for ${this.months[this.selectedMonth]} ${this.selectedYear}`;
-    this.scheduleService
-      .getUserSchedulesForMonth(this.selectedMonth, this.selectedYear, user)
-      .subscribe((slots) => {
-        this.timeSlots = slots;
-      });
+
+    if(user.role === 'doctor') {
+      this.scheduleService
+        .getDoctorSchedules(user.uid, this.selectedYear, this.selectedMonth)
+        .subscribe((slots) => {
+          this.timeSlots = slots;
+        });
+      } else {
+      this.scheduleService
+        .getPatientSchedules(user.uid, this.selectedYear, this.selectedMonth)
+        .subscribe((slots) => {
+          this.timeSlots = slots;
+        });
+    }
   }
 }

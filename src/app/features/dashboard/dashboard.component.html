@@ -1,3 +1,3 @@
-<span class="font-semibold text-2xl">Hi {{ user.firstName }},</span>
+<span class="font-semibold text-2xl" *ngIf="user.role === 'doctor'">Hi {{ user.firstName }},</span>
 <app-doctor-dashboard *ngIf="user.role === 'doctor'"></app-doctor-dashboard>
-<app-patient-dashboard [patientSchedule]="userSchedulesWithDoctors" [userInformation]="personalInformation" *ngIf="user.role !== 'doctor' && personalInformation"></app-patient-dashboard>
+<app-patient-dashboard [user]="user" [patientSchedule]="userSchedulesWithDoctors" [userInformation]="personalInformation" *ngIf="user.role !== 'doctor' && personalInformation"></app-patient-dashboard>
