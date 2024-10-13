@@ -12,6 +12,7 @@ import { SettingsComponent } from './features/settings/settings.component';
 import { EditProfileComponent } from './features/settings/partials/edit-profile/edit-profile.component';
 import { SchedulesComponent } from './features/schedules/schedules.component';
 import { ChatComponent } from './features/chat/chat.component';
+import { PastSchedulesComponent } from './features/past-schedules/past-schedules.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/main-app', pathMatch: 'full' },
@@ -28,6 +29,7 @@ const routes: Routes = [
     ] },
     { path: 'chats', component: ChatComponent },
     { path: 'schedules', component: SchedulesComponent },
+    { path: 'past-schedules', component: PastSchedulesComponent },
   ], canActivate: [loggedInGuard] }
 ];
 

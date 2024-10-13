@@ -25,17 +25,7 @@ export class AuthService {
     private profileService: ProfileService,
     private scheduleService: ScheduleService,
     private notificationService: NotificationService
-  ) {
-    const dummyUser: User = {
-      uid: 'iicisc',
-      firstName: 'Fikayomi',
-      lastName: 'Fagbenro',
-      role: 'patient',
-      email: 'sunday@gmail.com',
-      phoneNumber: '09060640930'
-    }
-    // this._user$.next(dummyUser)
-  }
+  ) {}
 
   autoLogin() {
     const user = JSON.parse(localStorage.getItem(this._CREDENTIALS))

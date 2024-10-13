@@ -28,6 +28,7 @@ import { DoctorDashboardComponent } from './features/dashboard/partials/doctor-d
 import { PatientDashboardComponent } from './features/dashboard/partials/patient-dashboard/patient-dashboard.component'
 import { environment } from '../environments/environment.development';
 import { ChatComponent } from './features/chat/chat.component';
+import { PastSchedulesComponent } from './features/past-schedules/past-schedules.component';
 
 @NgModule({
   declarations: [
@@ -47,7 +48,8 @@ import { ChatComponent } from './features/chat/chat.component';
     SchedulesComponent,
     DoctorDashboardComponent,
     PatientDashboardComponent,
-    ChatComponent
+    ChatComponent,
+    PastSchedulesComponent
   ],
   imports: [
     BrowserModule,

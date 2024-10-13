@@ -99,12 +99,20 @@ export class ScheduleComponent {
     } else if(isBooked && !isBookedByCurrentUser) {
       this.notificationService.alertError('This session has been booked by another patient, pls book another session')
       return
+    } else if(!this.booker.personalInformation) {
+      this.notificationService.alertError('Pls set your personal information in the settings before booking an appointment')
+      return
     }
     const datePart = day.toISOString().split('T')[0]
     const clickedSlot: TimeSlot = { 
       startTime: `${datePart}T${slot.startTime}:00.000Z`,
       endTime: `${datePart}T${slot.endTime}:00.000Z`,
       bookerID: this.booker.uid,
+      bookerName: {
+        firstName: this.booker.firstName,
+        lastName: this.booker.lastName
+      },
+      bookerPersonalInformation: this.booker.personalInformation,
       isAvailable: false,
       slotID: this.scheduleService.generateUUID()
     }

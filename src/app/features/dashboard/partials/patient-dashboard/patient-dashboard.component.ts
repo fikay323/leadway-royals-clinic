@@ -25,6 +25,8 @@ export class PatientDashboardComponent {
       startTime: item.startTime,
       endTime: item.endTime,
       bookerID: item.bookerID,
+      bookerName: item.bookerName,
+      bookerPersonalInformation: item.bookerPersonalInformation
     }
     console.log(item)
     this.scheduleService.removeTimeSlot(appointment, null, item.doctorID)

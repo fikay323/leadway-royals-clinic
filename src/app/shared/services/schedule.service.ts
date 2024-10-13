@@ -1,16 +1,19 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import firebase from 'firebase/compat/app'; 
-import { catchError, forkJoin, from, map, Observable, of, switchMap, tap } from 'rxjs';
+import { catchError, forkJoin, from, map, Observable, of, tap } from 'rxjs';
 
 import { ErrorHandlerService } from './error-handler.service';
 import { User } from '../models/user.model';
 import { NotificationService } from './notification.service';
+import { InformationForm } from './profile.service';
 
 export interface TimeSlot { 
   startTime: string;        // Start time of the slot in ISO format (e.g., '2024-10-10T09:00:00Z')
   endTime: string;          // End time of the slot in ISO format (e.g., '2024-10-10T10:00:00Z')
   bookerID: string;
+  bookerName: {firstName: string, lastName: string},
+  bookerPersonalInformation: InformationForm;
   isAvailable: boolean;     // Availability status (true if the slot is available, false otherwise)
   slotID: string;
 }
@@ -58,7 +61,11 @@ export class ScheduleService {
   // private _schedules$: BehaviorSubject<IndividualDoctorSchedule[]> = new BehaviorSubject(this._doctorsSchedules) 
   
 
-  constructor(private afs: AngularFirestore, private errorHandlerService: ErrorHandlerService, private notificationService: NotificationService) {}
+  constructor(
+    private afs: AngularFirestore, 
+    private errorHandlerService: ErrorHandlerService, 
+    private notificationService: NotificationService
+  ) {}
 
   getSchedule(): Observable<IndividualDoctorSchedule[]> {
     return this.afs.collection<IndividualDoctorSchedule>('schedules').valueChanges().pipe(
@@ -98,7 +105,6 @@ export class ScheduleService {
   bookTimeSlot(timeslot: TimeSlot, doctor: IndividualDoctorSchedule) {
     const doctorScheduleRef = this.afs.collection('schedules').doc(doctor.doctorID);
 
-    // Use arrayUnion to add the new timeSlot to the timeSlots array
     return from(doctorScheduleRef.update({
       timeSlots: firebase.firestore.FieldValue.arrayUnion(timeslot)
     })).pipe(
@@ -131,7 +137,6 @@ export class ScheduleService {
   uploadDoctorSchedule(doctorSchedule: IndividualDoctorSchedule): Observable<void> {
     const doctorID = doctorSchedule.doctorID;
 
-    // Convert the Firestore set promise into an observable using 'from'
     return from(
       this.afs
         .collection('schedules')
@@ -150,44 +155,6 @@ export class ScheduleService {
     const uploadObservables = schedules.map(schedule => this.uploadDoctorSchedule(schedule));
     return forkJoin(uploadObservables); // Combine all observables into one
   }
-
-  // filterTimeSlotsByBookerID(currentUserUID: string): Observable<void> {
-  //   // Reference to the schedules collection
-  //   const schedulesCollectionRef = this.afs.collection('schedules');
-
-  //   // Fetch all schedules
-  //   return schedulesCollectionRef.get().pipe(
-  //     map(querySnapshot => {
-  //       // Map over each document in the collection
-  //       const batch = this.afs.firestore.batch(); // Use a batch write to update multiple docs
-  //       querySnapshot.docs.forEach(doc => {
-  //         const schedule = doc.data() as IndividualDoctorSchedule;
-          
-  //         if (schedule.timeSlots && schedule.timeSlots.length > 0) {
-  //           // Filter the timeSlots array to remove those with matching bookerID
-  //           const updatedTimeSlots = schedule.timeSlots.filter(slot => slot.bookerID !== currentUserUID);
-
-  //           // If there are changes, update the schedule with the new timeSlots array
-  //           if (updatedTimeSlots.length !== schedule.timeSlots.length) {
-  //             const scheduleDocRef = this.afs.collection('schedules').doc(schedule.doctorID).ref;
-  //             batch.update(scheduleDocRef, { timeSlots: updatedTimeSlots });
-  //           }
-  //         }
-  //       });
-
-  //       // Commit the batch update
-  //       return batch.commit(); // This returns a Promise<void>
-  //     }),
-  //     switchMap(batchCommitObservable => from(batchCommitObservable)), // Convert the Promise<void> to Observable<void>
-  //     catchError(err => {
-  //       this.errorHandlerService.handleError(err)
-  //       return of(null)
-  //     }),
-  //     tap(res => {
-  //       // this.notificationService.alertSuccess('Appointment cancelled successfully')
-  //     }),
-  //   )
-  // }
 
   getAllPatientSchedules(userUID): Observable<TimeSlotWithDoctorID[]> {
     return this.afs.collection(`schedules`).valueChanges().pipe(
@@ -214,5 +181,53 @@ export class ScheduleService {
         return of(null)
       })
     )
+  }
+
+  getUserSchedulesForMonth(month: number, year: number, currentUser: User): Observable<TimeSlot[]> {
+    const userID = currentUser.uid;
+    const userRole = currentUser.role;
+
+    const startOfMonth = new Date(year, month, 1);
+    const endOfMonth = new Date(year, month + 1, 0);
+
+    if (userRole === 'patient') {
+      return this.afs
+        .collection('schedules')
+        .snapshotChanges()
+        .pipe(
+          map((docs) => {
+            const timeSlots: TimeSlot[] = [];
+            docs.forEach((doc) => {
+              const schedule = doc.payload.doc.data() as any;
+              schedule.timeSlots.forEach((slot: TimeSlot) => {
+                const slotStartDate = new Date(slot.startTime)
+                if (
+                  slot.bookerID === userID &&
+                  slotStartDate.getMonth() === startOfMonth.getMonth() &&
+                  slotStartDate.getFullYear() === startOfMonth.getFullYear()
+                ) {
+                  timeSlots.push(slot);
+                }
+              });
+            });
+            return timeSlots;
+          })
+        );
+    } else if (userRole === 'doctor') {
+      return this.afs
+        .collection('schedules')
+        .doc(userID)
+        .valueChanges()
+        .pipe(
+          map((schedule: any) => {
+            const timeSlots = schedule?.timeSlots || [];
+            return timeSlots.filter((slot: TimeSlot) => {
+              return new Date(slot.startTime) >= startOfMonth && new Date(slot.startTime) <= endOfMonth;
+            });
+          })
+        );
+    }
+
+    return of([]);
   }
 }

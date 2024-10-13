@@ -1,0 +1,43 @@
+<div class="container mx-auto px-4 py-6">
+    <!-- Heading -->
+    <h1 class="text-2xl font-bold mb-4">{{ monthYearDisplay }}</h1>
+
+    <!-- Month and Year Selectors -->
+    <div class="flex items-center space-x-4 mb-6">
+        <label for="month" class="block text-sm font-medium">Select Month:</label>
+        <select id="month" class="border rounded p-2" (change)="onMonthChange($event)">
+            <option *ngFor="let month of months; let i = index" [value]="i" [selected]="i === selectedMonth">{{ month }}
+            </option>
+        </select>
+
+        <label for="year" class="block text-sm font-medium">Select Year:</label>
+        <select id="year" class="border rounded p-2" (change)="onYearChange($event)">
+            <option *ngFor="let year of [2024, 2023, 2022, 2021]" [value]="year" [selected]="year === selectedYear">{{
+                year }}</option>
+        </select>
+    </div>
+
+    <!-- Appointments Table -->
+    <div *ngIf="timeSlots.length > 0">
+        <table class="w-full text-left border-collapse">
+            <thead>
+                <tr>
+                    <th class="p-3 border-b">Date</th>
+                    <th class="p-3 border-b">Time</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let slot of timeSlots">
+                    <td class="p-3 border-b">{{ slot.startTime | date: 'mediumDate' }}</td>
+                    <td class="p-3 border-b">{{ slot.startTime | date: 'shortTime' }} - {{ slot.endTime | date:
+                        'shortTime' }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- No Appointments Message -->
+    <div *ngIf="timeSlots.length === 0" class="text-lg mt-4">
+        You {{ selectedMonth < today.getMonth() ? 'had' : 'have' }} no appointments during {{ months[selectedMonth] }} {{ selectedYear }}.
+    </div>
+</div>
