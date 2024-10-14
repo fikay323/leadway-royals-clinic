@@ -32,9 +32,9 @@ export class AuthService {
   ) {}
 
   autoLogin() {
-    const user = JSON.parse(localStorage.getItem(this._CREDENTIALS))
+    const user: User = JSON.parse(localStorage.getItem(this._CREDENTIALS))
     if (user) {
-      this._user$.next(user)
+      this.setCredentials(user)
       return
     }
   }
@@ -67,9 +67,9 @@ export class AuthService {
   setCredentials(userData: User) {
     this._user$.next(userData)
     localStorage.setItem(this._CREDENTIALS, JSON.stringify(userData))
-    // this.messagingService.requestPermission().then(token => {
-    //   this.afs.collection('users').doc(userData.uid).update({ fcmToken: token });
-    // })
+    if(userData.uid) {
+      this.messagingService.requestPermission(userData)
+    }
   }
 
   login({email: email, password: password}: loginRequest): Observable<any> {

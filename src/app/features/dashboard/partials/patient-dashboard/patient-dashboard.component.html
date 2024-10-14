@@ -1,5 +1,5 @@
 <section class="p-2">
-    <section class="bg-primary-900 min-h-[200px] flex flex-col relative justify-center text-white font-mullish p-3 rounded-xl">
+    <section class="bg-primary-900 min-h-[200px] flex flex-col relative justify-center text-white font-mullish p-3 px-7 rounded-xl">
         <span class="text-3xl mb-5 font-bold mt-auto relative">{{ greet() }} {{ user.firstName }}</span>
         <span class="mb-auto flex flex-col">
             <span class="block text-lg font-semibold mt-4" *ngIf="!isPersonalInformationPresent()">
@@ -7,7 +7,7 @@
             </span>
             <span class="text-base font-semibold mt-2">Welcome to clinic's website, how are you feeling today?</span>
             <span class="mt-1">Book an appointment with one of doctors today</span>
-            <button routerLink="main-app/schedules" class="bg-white text-primary-900 w-fit font-bold flex items-center p-2 mt-1 rounded-lg">Book an appointment <mat-icon>arrow_right</mat-icon></button>
+            <button routerLink="main-app/schedules" class="bg-white text-primary-900 w-fit font-bold flex items-center p-2 mt-2 rounded-lg">Book an appointment <mat-icon>arrow_right</mat-icon></button>
         </span>
         <img class="absolute bottom-0 right-0 hidden lg:block h-[280px]" src="assets/jpg/doctor.png" alt="">
     </section>

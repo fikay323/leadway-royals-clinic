@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { importProvidersFrom, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AngularFireModule } from '@angular/fire/compat';
 import { AngularFireMessagingModule } from '@angular/fire/compat/messaging';
@@ -30,6 +30,7 @@ import { PatientDashboardComponent } from './features/dashboard/partials/patient
 import { environment } from '../environments/environment.development';
 import { ChatComponent } from './features/chat/chat.component';
 import { PastSchedulesComponent } from './features/past-schedules/past-schedules.component';
+import { HttpClientModule, provideHttpClient } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -54,6 +55,7 @@ import { PastSchedulesComponent } from './features/past-schedules/past-schedules
   ],
   imports: [
     BrowserModule,
+    HttpClientModule,
     AppRoutingModule,
     FormsModule,
     ReactiveFormsModule,
@@ -66,7 +68,8 @@ import { PastSchedulesComponent } from './features/past-schedules/past-schedules
     AngularFireMessagingModule
   ],
   providers: [
-    provideAnimationsAsync()
+    provideAnimationsAsync(),
+    importProvidersFrom(HttpClientModule)
   ],
   bootstrap: [AppComponent]
 })

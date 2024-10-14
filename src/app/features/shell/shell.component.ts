@@ -3,6 +3,8 @@ import { tap } from 'rxjs';
 
 import { UtilityService } from '../../shared/services/utility.service';
 import { MessagingService } from '../../shared/services/messaging.service';
+import { NotificationService } from '../../shared/services/notification.service';
+import { AuthService } from '../../shared/services/auth.service';
 
 @Component({
   selector: 'app-shell',
@@ -16,11 +18,15 @@ export class ShellComponent implements OnInit {
 
   constructor(
     private utilityService: UtilityService,
-    private messagingService: MessagingService
+    private messagingService: MessagingService,
+    private authService: AuthService
   ) { }
 
   ngOnInit() {
-    this.messagingService.requestPermission()
+    this.authService.user$.subscribe(user => {
+      this.messagingService.requestPermission(user)
+      this.messagingService.listenForMessages()
+    })
   }
 
   isMobile$ = this.utilityService.isMobile$.pipe(

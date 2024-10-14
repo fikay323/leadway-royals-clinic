@@ -1,0 +1,3 @@
+[build]
+  publish = "build"  # or "dist" for Angular, depending on your build output directory
+  command = "npm run build"

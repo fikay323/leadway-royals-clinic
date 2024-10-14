@@ -1,6 +1,6 @@
 <span class="text-2xl font-medium block" *ngIf="!isDashboard">Dr {{ getFirstLetter(doctorSchedule.doctorFirstName) }}. {{ doctorSchedule.doctorLastName }}'s Schedule for the next 7 days</span>
 <button (click)="chatDoctor(doctorSchedule)" *ngIf="!isDashboard && this.doctorSchedule.doctorID !== this.booker.uid" class="text-white font-semibold font-mullish text-xs bg-greyscale-9 rounded-md p-2 my-2 border border-greyscale-12 hover:italic block">Chat with Dr.</button>
-<span class="text-2xl font-medium block" *ngIf="isDashboard">Your Schedule for the next 7 days</span>
+<span [ngClass]="isDashboard ? 'pb-5' : ''" class="text-2xl font-medium block" *ngIf="isDashboard">Your Schedule for the next 7 days</span>
 <section *ngIf="doctorSchedule" class="max-w-full overflow-x-auto">
     <table class="w-full border-collapse mb-6">
         <thead>
@@ -19,7 +19,8 @@
             class="border p-2 text-center cursor-pointer"
             [ngClass]="{
                 'bg-red-200': isBooked(day, slot, doctorSchedule),
-                'bg-white': !isBooked(day, slot, doctorSchedule)
+                'bg-white': !isBooked(day, slot, doctorSchedule),
+                'bg-green-200': isBookedByCurrentUser(day, slot, doctorSchedule),
             }"
             (click)="bookSlot(day, slot, doctorSchedule, isBooked(day, slot, doctorSchedule), isBookedByCurrentUser(day, slot, doctorSchedule))"
             >

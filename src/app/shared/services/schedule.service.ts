@@ -7,6 +7,7 @@ import { ErrorHandlerService } from './error-handler.service';
 import { User } from '../models/user.model';
 import { NotificationService } from './notification.service';
 import { InformationForm } from './profile.service';
+import { BookingService } from './booking.service';
 
 export interface TimeSlot { 
   startTime: string;        // Start time of the slot in ISO format (e.g., '2024-10-10T09:00:00Z')
@@ -64,7 +65,7 @@ export class ScheduleService {
   constructor(
     private afs: AngularFirestore, 
     private errorHandlerService: ErrorHandlerService, 
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
   ) {}
 
   getSchedule(): Observable<IndividualDoctorSchedule[]> {
@@ -77,6 +78,10 @@ export class ScheduleService {
           }
         })
         return schedule
+      }), 
+      catchError(err => {
+        this.errorHandlerService.handleError(err)
+        return of([])
       })
     )
   }
@@ -110,6 +115,21 @@ export class ScheduleService {
     })).pipe(
       tap(res => {
         this.notificationService.alertSuccess('Appointment booked successfully')
+        fetch('netlify/functions/sendEmail', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            doctorName: 'Dr. Smith',
+            patientName: 'Jane Doe',
+            appointmentTime: '2024-10-18T11:00:00.000Z',
+            email: 'janedoe@example.com',
+          }),
+        })
+          .then(response => response.json())
+          .then(data => console.log('Email sent:', data))
+          .catch(error => console.error('Error:', error));
       }),
       catchError(err => {
         this.errorHandlerService.handleError(err)
@@ -208,6 +228,10 @@ export class ScheduleService {
                 slotStartDate.getMonth() === month &&
                 slotStartDate.getFullYear() === year
               })
+        }), 
+        catchError(err => {
+          this.errorHandlerService.handleError(err)
+          return of([])
         })
       );
   }
@@ -226,7 +250,11 @@ export class ScheduleService {
               return slotStartDate.getMonth() === month &&
               slotStartDate.getFullYear() === year
             })
-        )
+        ), 
+        catchError(err => {
+          this.errorHandlerService.handleError(err)
+          return of([])
+        })
       );
   }
 }
