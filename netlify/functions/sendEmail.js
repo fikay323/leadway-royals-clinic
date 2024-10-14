@@ -1,5 +1,3 @@
-// netlify/functions/sendEmail.js
-
 const nodemailer = require('nodemailer');
 
 exports.handler = async function (event, context) {
@@ -10,14 +8,14 @@ exports.handler = async function (event, context) {
     const transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
-        user: process.env.GMAIL_USER,
-        pass: process.env.GMAIL_PASS,
+        user: 'fagbenrocoa@gmail.com',
+        pass: "Fikayomi",
       },
     });
 
     // Set up the email options
     const mailOptions = {
-      from: process.env.GMAIL_USER,
+      from: 'fagbenrocoa@gmail.com',
       to: email,
       subject: `Appointment Confirmation with ${doctorName}`,
       text: `Dear ${patientName},\n\nYour appointment with ${doctorName} is confirmed for ${appointmentTime}.\n\nThank you.`,
