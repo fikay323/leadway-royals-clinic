@@ -8,7 +8,6 @@ import { ErrorHandlerService } from './error-handler.service';
 import { User } from '../models/user.model';
 import { NotificationService } from './notification.service';
 import { InformationForm } from './profile.service';
-import { BookingService } from './booking.service';
 
 export interface TimeSlot { 
   startTime: string;        // Start time of the slot in ISO format (e.g., '2024-10-10T09:00:00Z')

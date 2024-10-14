@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, catchError, from, Observable, of, Subject, switchMap, tap } from 'rxjs';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
 
 import { Role, User } from '../models/user.model';
 import { ErrorHandlerService } from './error-handler.service';
@@ -9,8 +10,6 @@ import { loginRequest, registerRequest } from '../models/auth.model';
 import { ScheduleService } from './schedule.service';
 import { NotificationService } from './notification.service';
 import { InformationForm, ProfileService } from './profile.service';
-import { MessagingService } from './messaging.service';
-import { AngularFirestore } from '@angular/fire/compat/firestore';
 
 @Injectable({
   providedIn: 'root'
@@ -28,7 +27,6 @@ export class AuthService {
     private profileService: ProfileService,
     private scheduleService: ScheduleService,
     private notificationService: NotificationService,
-    private messagingService: MessagingService
   ) {}
 
   autoLogin() {
@@ -65,10 +63,9 @@ export class AuthService {
   }
 
   setCredentials(userData: User) {
-    this._user$.next(userData)
-    localStorage.setItem(this._CREDENTIALS, JSON.stringify(userData))
     if(userData.uid) {
-      this.messagingService.requestPermission(userData)
+      this._user$.next(userData)
+      localStorage.setItem(this._CREDENTIALS, JSON.stringify(userData))
     }
   }
 
