@@ -1,11 +1,12 @@
 import { Component, Input, input } from '@angular/core';
-import { map, Observable } from 'rxjs';
+import { from, map, Observable, of } from 'rxjs';
 
 import { IndividualDoctorSchedule, ScheduleService, TimeSlot } from '../../services/schedule.service';
 import { User } from '../../models/user.model';
 import { NotificationService } from '../../services/notification.service';
 import { ChatService } from '../../services/chat.service';
 import { Router } from '@angular/router';
+import { ProfileService } from '../../services/profile.service';
 
 interface name {
   firstName: string,
@@ -30,12 +31,16 @@ export class ScheduleComponent {
   constructor(
     private scheduleService: ScheduleService, 
     private notificationService: NotificationService,
+    private profileService: ProfileService,
     private chatService: ChatService,
     private router: Router,
   ) {}
-
+  
   ngOnInit() {
     this.getNextBusinessDays(7)
+    this.profileService.getPersonalInformation(of(this.booker)).subscribe(info => {
+      this.booker.personalInformation = info
+    })
   }
 
   chatDoctor(doctor: IndividualDoctorSchedule) {
@@ -100,8 +105,9 @@ export class ScheduleComponent {
       this.notificationService.alertError('This session has been booked by another patient, pls book another session')
       return
     } else if(Object.keys(this.booker.personalInformation).length === 0) {
-      // this.notificationService.alertError('Pls set your personal information in the settings before booking an appointment')
-      // return
+      console.log(this.booker.personalInformation)
+      this.notificationService.alertError('Pls set your personal information in the settings before booking an appointment')
+      return
     }
     const datePart = day.toISOString().split('T')[0]
     const clickedSlot: TimeSlot = { 
@@ -117,7 +123,7 @@ export class ScheduleComponent {
       slotID: this.scheduleService.generateUUID()
     }
     if(!isBookedByCurrentUser) {
-      this.scheduleService.bookTimeSlot(clickedSlot, doctor).subscribe()
+      this.scheduleService.bookTimeSlot(clickedSlot, doctor, this.booker.email).subscribe()
     } else {
       this.getTheClickedSlotDetailsAndRemove(day, slot, doctor)
     }

@@ -21,6 +21,7 @@
     "@angular/platform-browser": "^17.0.0",
     "@angular/platform-browser-dynamic": "^17.0.0",
     "@angular/router": "^17.0.0",
+    "emailjs-com": "^3.2.0",
     "firebase": "^10.14.1",
     "nodemailer": "^6.9.15",
     "rxjs": "~7.8.0",

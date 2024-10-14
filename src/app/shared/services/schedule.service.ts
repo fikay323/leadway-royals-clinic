@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import firebase from 'firebase/compat/app'; 
 import { catchError, forkJoin, from, map, Observable, of, tap } from 'rxjs';
+import emailjs from 'emailjs-com';
 
 import { ErrorHandlerService } from './error-handler.service';
 import { User } from '../models/user.model';
@@ -36,31 +37,9 @@ export interface IndividualDoctorSchedule {
   providedIn: 'root'
 })
 export class ScheduleService {
-  // private _doctorsSchedules: IndividualDoctorSchedule[] = [
-  //   {
-  //     doctorID: 'Doctor_001',
-  //     timeSlots: [
-  //       { startTime: '2024-10-14T09:00:00Z', endTime: '2024-10-14T10:00:00Z', bookerID: 'Patient_123', isAvailable: false },
-  //       { startTime: '2024-10-15T10:00:00Z', endTime: '2024-10-15T11:00:00Z', bookerID: 'Patient_456', isAvailable: false },
-  //     ],
-  //   },
-  //   {
-  //     doctorID: 'Doctor_002',
-  //     timeSlots: [
-  //       { startTime: '2024-10-15T10:00:00Z', endTime: '2024-10-15T11:00:00Z', bookerID: 'Patient_789', isAvailable: false },
-  //       { startTime: '2024-10-21T09:00:00Z', endTime: '2024-10-21T10:00:00Z', bookerID: 'Patient_987', isAvailable: false },
-  //     ],
-  //   },
-  //   {
-  //     doctorID: 'Doctor_003',
-  //     timeSlots: [
-  //       { startTime: '2024-10-16T11:00:00Z', endTime: '2024-10-16T12:00:00Z', bookerID: 'Patient_654', isAvailable: false },
-  //     ],
-  //   },
-  // ];
-
-  // private _schedules$: BehaviorSubject<IndividualDoctorSchedule[]> = new BehaviorSubject(this._doctorsSchedules) 
-  
+  months: string[] = [
+    'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'
+  ];
 
   constructor(
     private afs: AngularFirestore, 
@@ -107,7 +86,7 @@ export class ScheduleService {
     )
   }
 
-  bookTimeSlot(timeslot: TimeSlot, doctor: IndividualDoctorSchedule) {
+  bookTimeSlot(timeslot: TimeSlot, doctor: IndividualDoctorSchedule, userEmail: string) {
     const doctorScheduleRef = this.afs.collection('schedules').doc(doctor.doctorID);
 
     return from(doctorScheduleRef.update({
@@ -115,27 +94,30 @@ export class ScheduleService {
     })).pipe(
       tap(res => {
         this.notificationService.alertSuccess('Appointment booked successfully')
-        fetch('netlify/functions/sendEmail', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            doctorName: 'Dr. Smith',
-            patientName: 'Jane Doe',
-            appointmentTime: '2024-10-18T11:00:00.000Z',
-            email: 'janedoe@example.com',
-          }),
-        })
-          .then(response => response.json())
-          .then(data => console.log('Email sent:', data))
-          .catch(error => console.error('Error:', error));
+        const date = new Date(timeslot.startTime)
+        const appointmentTime = `${date.getHours()-1}am on ${date.getDate()} ${this.months[date.getMonth()]}`
+        const text = `Your appointment with Dr. ${doctor.doctorFirstName.charAt(0)}. ${doctor.doctorLastName} is confirmed for ${appointmentTime}`
+        this.sendEmail(timeslot.bookerName.firstName, text, userEmail)
       }),
       catchError(err => {
         this.errorHandlerService.handleError(err)
         return of(null)
       })
     )
+  }
+  sendEmail(toName: string, message: string, patientEmail: string): void {
+    const templateParams = {
+      to_name: toName, 
+      message: message,
+      patient_email: patientEmail,
+    };
+
+    emailjs.send('service_3my4vtt', 'template_j670h4b', templateParams, '_LpvsLFqGpAuXpSoF')
+      .then((response) => {
+        console.log('Email sent successfully!', response.status, response.text);
+      }, (err) => {
+        console.error('Failed to send email. Error:', err);
+      });
   }
 
   removeTimeSlot(timeslot: TimeSlot, doctor?: IndividualDoctorSchedule, doctorID?: string) {
