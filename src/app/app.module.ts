@@ -18,7 +18,6 @@ import { AuthComponent } from './features/auth/auth.component';
 import { SharedModule } from './shared/shared.module';
 import { SidenavComponent } from './features/shell/partials/sidenav/sidenav.component';
 import { NavbarComponent } from './features/shell/partials/navbar/navbar.component';
-import { TestRouteComponent } from './features/shell/partials/test-route/test-route.component';
 import { DashboardComponent } from './features/dashboard/dashboard.component';
 import { SettingsComponent } from './features/settings/settings.component';
 import { EditProfileComponent } from './features/settings/partials/edit-profile/edit-profile.component';
@@ -31,6 +30,7 @@ import { environment } from '../environments/environment.development';
 import { ChatComponent } from './features/chat/chat.component';
 import { PastSchedulesComponent } from './features/past-schedules/past-schedules.component';
 import { HttpClientModule, provideHttpClient } from '@angular/common/http';
+import { AboutUsComponent } from './features/about-us/about-us.component';
 
 @NgModule({
   declarations: [
@@ -41,7 +41,6 @@ import { HttpClientModule, provideHttpClient } from '@angular/common/http';
     RegisterComponent,
     SidenavComponent,
     NavbarComponent,
-    TestRouteComponent,
     DashboardComponent,
     SettingsComponent,
     EditProfileComponent,
@@ -51,7 +50,8 @@ import { HttpClientModule, provideHttpClient } from '@angular/common/http';
     DoctorDashboardComponent,
     PatientDashboardComponent,
     ChatComponent,
-    PastSchedulesComponent
+    PastSchedulesComponent,
+    AboutUsComponent
   ],
   imports: [
     BrowserModule,

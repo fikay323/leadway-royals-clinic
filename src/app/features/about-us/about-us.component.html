@@ -1,0 +1,19 @@
+<main class="w-fit m-auto sm:pt-10 font-mullish pb-6">
+    <section class="flex flex-col items-start justify-start sm:justify-center sm:items-center p-5 relative">
+        <img class="h-[50px] sm:absolute left-0" src="assets/png/diamond.png" alt="">
+        <span class="bg-secondary-50 text-secondary-900 text-xs p-2 2xl:text-base font-bold rounded-2xl">About Us</span>
+        <span class="text-3xl xl:text-5xl max-w-[450px] xl:max-w-[600px] pt-3 sm:text-center text-primary-900 font-semibold font-spaceGrotesk">Meet The Team</span>
+        <span class="sm:w-2/3 sm:text-center pt-3 text-greyscale-9 text-xs sm:text-sm">This is a final year project of students of the Computer Engineering Department Of LAUTECH</span>
+    </section>
+    <section class="grid grid-cols-1 sm:grid-cols-2 gap-5 md:grid-cols-4">
+        @for(member of contributors; track $index) {
+            <section class="flex items-center justify-center flex-col">
+                <img class="w-36 h-3w-36 object-cover object-top" [src]="member.picURL" alt="">
+                <span class="text-lg font-bold mt-2">{{ member.name }}</span>
+                <span class="font-semibold">{{ member.matNo || member.desc }}</span>
+            </section>
+        }
+    </section>
+
+    <span class="mt-12 text-base block font-spaceGrotesk font-semibold text-primary-700 w-full text-center">The developer <span>Fagbenro Oluwafikayomi</span></span>
+</main>

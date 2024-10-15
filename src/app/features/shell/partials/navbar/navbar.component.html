@@ -10,7 +10,7 @@
         </a>
         <a routerLink="/main-app/settings" class="cursor-pointer lg:hidden">
             <div class="w-10 h-10 rounded-full overflow-hidden">
-                <img class="w-10 h-10" src="assets/jpg/avatar.jpg" alt="">
+                <img class="w-10 h-10 object-cover object-top" [src]="profilePic || 'assets/jpg/avatar.jpg'" alt="">
             </div>
         </a>
     </span>

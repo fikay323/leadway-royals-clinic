@@ -8,7 +8,7 @@
         <section class="flex gap-6 items-center">
             <span class="relative w-fit">
                 <div class="w-20 h-20 rounded-full overflow-hidden">
-                    <img class="w-20 h-20" src="assets/jpg/avatar.jpg" alt="">
+                    <img class="w-20 h-20 object-cover object-top" [src]="userPic || 'assets/jpg/avatar.jpg'" alt="">
                 </div>
                 <app-icon class="absolute bottom-0 -right-2" iconType="camera"></app-icon>
             </span>

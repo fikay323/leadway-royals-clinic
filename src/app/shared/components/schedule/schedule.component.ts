@@ -105,7 +105,6 @@ export class ScheduleComponent {
       this.notificationService.alertError('This session has been booked by another patient, pls book another session')
       return
     } else if(Object.keys(this.booker.personalInformation).length === 0) {
-      console.log(this.booker.personalInformation)
       this.notificationService.alertError('Pls set your personal information in the settings before booking an appointment')
       return
     }

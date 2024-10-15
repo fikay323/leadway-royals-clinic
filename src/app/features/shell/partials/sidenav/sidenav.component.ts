@@ -11,6 +11,7 @@ import { tap } from 'rxjs';
 export class SidenavComponent {
   @Output() closeSidenav = new EventEmitter<void>();
   isMobile: boolean = false;
+  userPic: string
   user$ = this.authService.user$
 
   get userNameAndEmail(): {name: string, email: string}{
@@ -21,6 +22,7 @@ export class SidenavComponent {
       firstName = user.firstName || "";
       lastName = user.lastName || "";
       email = user.email || ""
+      this.userPic = user.profilePic
     })
     return {
       name: !!firstName || !!lastName ? `${firstName} ${lastName}` : "",

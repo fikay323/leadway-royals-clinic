@@ -7,6 +7,7 @@ import { AuthService } from '../../../../shared/services/auth.service';
   styleUrl: './settings-menu-mobile.component.scss'
 })
 export class SettingsMenuMobileComponent {
+  userPic: string
   user$ = this.authService.user$
 
   get userNameAndEmail(): {name: string, email: string, phoneNumber: string}{
@@ -19,6 +20,7 @@ export class SettingsMenuMobileComponent {
       lastName = user.lastName || "";
       email = user.email || ""
       phoneNumber = user.phoneNumber || ""
+      this.userPic = user.profilePic
     })
     return {
       name: !!firstName || !!lastName ? `${firstName} ${lastName}` : "",

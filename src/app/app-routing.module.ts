@@ -12,9 +12,11 @@ import { EditProfileComponent } from './features/settings/partials/edit-profile/
 import { SchedulesComponent } from './features/schedules/schedules.component';
 import { ChatComponent } from './features/chat/chat.component';
 import { PastSchedulesComponent } from './features/past-schedules/past-schedules.component';
+import { AboutUsComponent } from './features/about-us/about-us.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/main-app', pathMatch: 'full' },
+  { path: 'about-us', component: AboutUsComponent },
   { path: 'auth', component: AuthComponent, children: [
     { path: '', component: LoginComponent },
     { path: 'login', component: LoginComponent },

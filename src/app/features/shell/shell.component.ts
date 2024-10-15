@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { tap } from 'rxjs';
 
 import { UtilityService } from '../../shared/services/utility.service';
-import { AuthService } from '../../shared/services/auth.service';
 
 @Component({
   selector: 'app-shell',
@@ -16,7 +15,6 @@ export class ShellComponent implements OnInit {
 
   constructor(
     private utilityService: UtilityService,
-    private authService: AuthService
   ) { }
 
   ngOnInit() {  }

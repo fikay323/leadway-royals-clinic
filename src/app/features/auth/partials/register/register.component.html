@@ -1,4 +1,4 @@
-<main class="h-screen font-mullish overflow-auto">
+<main class="h-screen font-mullish overflow-auto no-scrollbar">
     <form class="flex flex-col py-8" [formGroup]="registerForm" (ngSubmit)="submitForm()">
         <span class="text-2xl font-semibold mb-7">Register Account</span>
 
@@ -93,7 +93,7 @@
         </section>
         <section class="image-preview"
             *ngIf="imagePreview && registerForm.controls['profilePicture'].valid">
-            <img [src]="imagePreview" alt="image-preview" class="max-w-96">
+            <img [src]="imagePreview" alt="image-preview" class="max-w-full max-h-[200px]">
         </section>
         <section class="image-preview" *ngIf="registerForm.controls['profilePicture'].invalid && registerForm.controls['profilePicture'].dirty">
             <p class="text-red-500 text-xs">Select a valid file</p>
