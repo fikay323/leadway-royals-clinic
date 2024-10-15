@@ -54,6 +54,11 @@ export class SidenavComponent {
       route: ["/main-app", "past-schedules"]
     },
     {
+      label: "About Us",
+      iconSrc: "assets/svg/history-icon.svg",
+      route: ["/main-app", "about-us"]
+    },
+    {
       label: "Logout",
       id: this.LOG_OUT_ID,
       iconSrc: "assets/svg/logout-icon.svg",

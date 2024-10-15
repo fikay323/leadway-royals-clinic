@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { AppComponent } from './app.component';
 import { LoginComponent } from './features/auth/partials/login/login.component';
 import { RegisterComponent } from './features/auth/partials/register/register.component';
 import { AuthComponent } from './features/auth/auth.component';
@@ -16,7 +15,6 @@ import { AboutUsComponent } from './features/about-us/about-us.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/main-app', pathMatch: 'full' },
-  { path: 'about-us', component: AboutUsComponent },
   { path: 'auth', component: AuthComponent, children: [
     { path: '', component: LoginComponent },
     { path: 'login', component: LoginComponent },
@@ -28,6 +26,7 @@ const routes: Routes = [
     { path: 'settings', component: SettingsComponent, children: [
       { path: 'edit-profile', component: EditProfileComponent }
     ] },
+    { path: 'about-us', component: AboutUsComponent },
     { path: 'chats', component: ChatComponent },
     { path: 'schedules', component: SchedulesComponent },
     { path: 'past-schedules', component: PastSchedulesComponent },
