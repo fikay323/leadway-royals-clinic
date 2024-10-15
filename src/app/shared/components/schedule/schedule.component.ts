@@ -76,7 +76,7 @@ export class ScheduleComponent {
     const dateStr = day.toISOString().split('T')[0];
     return doctor.timeSlots.some(
       (timeSlot) =>
-        timeSlot.startTime.split('T')[0] === dateStr && timeSlot.startTime.split('T')[1].slice(0, 5) === slot.startTime && !timeSlot.isAvailable
+        timeSlot.startTime.split('T')[0] === dateStr && timeSlot.startTime.split('T')[1].slice(0, 5) === slot.startTime && !timeSlot.isAvailable && timeSlot.bookerID !== this.booker.uid
     );
   }
   

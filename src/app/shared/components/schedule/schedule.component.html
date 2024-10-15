@@ -19,12 +19,12 @@
             class="border p-2 text-center cursor-pointer"
             [ngClass]="{
                 'bg-red-200': isBooked(day, slot, doctorSchedule),
-                'bg-white': !isBooked(day, slot, doctorSchedule),
-                'bg-green-300': isBookedByCurrentUser(day, slot, doctorSchedule),
+                'bg-white': !isBooked(day, slot, doctorSchedule) && !isBookedByCurrentUser(day, slot, doctorSchedule),
+                'bg-green-200': isBookedByCurrentUser(day, slot, doctorSchedule),
             }"
             (click)="bookSlot(day, slot, doctorSchedule, isBooked(day, slot, doctorSchedule), isBookedByCurrentUser(day, slot, doctorSchedule))"
             >
-            {{ isBooked(day, slot, doctorSchedule) ? 'Booked' : 'Available' }} <span class="block font-medium" *ngIf="isBookedByCurrentUser(day, slot, doctorSchedule)">By you</span>
+            {{ isBooked(day, slot, doctorSchedule) || isBookedByCurrentUser(day, slot, doctorSchedule)? 'Booked' : 'Available' }} <span class="block font-medium" *ngIf="isBookedByCurrentUser(day, slot, doctorSchedule)">By you</span>
             </td>
         </tr>
         </tbody>
