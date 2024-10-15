@@ -1,12 +1,9 @@
 import { Component } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
-
 import { AuthService } from '../../../../shared/services/auth.service';
 import { passwordValidator } from '../../../../shared/validators/password.validator';
-import { Router } from '@angular/router';
 import { registerRequest } from '../../../../shared/models/auth.model';
-import { NotificationService } from '../../../../shared/services/notification.service';
-import { ScheduleService } from '../../../../shared/services/schedule.service';
+import { mimeType } from '../../../../shared/validators/mime-type.validator';
 
 @Component({
   selector: 'app-register',
@@ -16,33 +13,32 @@ import { ScheduleService } from '../../../../shared/services/schedule.service';
 export class RegisterComponent {
   hide = true;
   emailErrorMessage = '';
-  isIndividual = false;
   loading = false;
+  imagePreview: string;
+  profilePic: File = null
 
   registerForm = this.formBuilder.group({
-    phoneNumber: ['', [Validators.required, Validators.minLength(11)]],
+    phoneNumber: ['', [Validators.required, Validators.minLength(11), Validators.maxLength(11)]],
     email: ['', [Validators.required, Validators.email]],
     password: ['Boss@12345', [Validators.required, passwordValidator]],
     role: ['', [Validators.required]],
     firstName: ['', Validators.required],
-    lastName: ['', Validators.required]
+    lastName: ['', Validators.required],
+    profilePicture: [null as File, [Validators.required], [mimeType]]
   });
   
   constructor(
     private authService: AuthService,
-    private router: Router,
     private formBuilder: FormBuilder,
   ) {}
 
   ngOnInit(): void {
-    const currentUrl  = this.router.url;
-    this.isIndividual = currentUrl.includes('individual');
   }
 
   submitForm() {
     this.loading = true;
     const registerFormData = this.registerForm.value as registerRequest
-    this.authService.registerUser(registerFormData).subscribe(res => {
+    this.authService.registerUser(registerFormData, this.profilePic).subscribe(res => {
       this.loading = false
     })
   }
@@ -55,6 +51,18 @@ export class RegisterComponent {
     } else {
       this.emailErrorMessage = '';
     }
+  }
+
+  onImagePicked(event: Event) {
+    const file = (event.target as HTMLInputElement).files![0];
+    this.profilePic = (event.target as HTMLInputElement).files![0];
+    this.registerForm.get('profilePicture')?.patchValue(file);
+    const reader = new FileReader();
+    reader.onload = () => {
+      const fileBase64 = reader.result as string;
+      this.imagePreview = fileBase64;
+    };
+    reader.readAsDataURL(file);
   }
 
 }

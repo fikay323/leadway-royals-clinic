@@ -1,5 +1,5 @@
-<main class="h-fit font-mullish">
-    <form class="flex flex-col" [formGroup]="registerForm" (ngSubmit)="submitForm()">
+<main class="h-screen font-mullish overflow-auto">
+    <form class="flex flex-col py-8" [formGroup]="registerForm" (ngSubmit)="submitForm()">
         <span class="text-2xl font-semibold mb-7">Register Account</span>
 
         <label class="text-xs mb-1">First Name</label>
@@ -11,7 +11,7 @@
          required
         >
         @if (registerForm.controls['firstName'].touched && (registerForm.controls['firstName'].hasError('required')) ) {
-            <small class="text-red-500 leading-3">Input a valid phone number</small>
+            <small class="text-red-500 leading-3">Input a valid first name</small>
         }
 
         <label class="text-xs mt-3 mb-1">Last Name</label>
@@ -23,7 +23,7 @@
          required
         >
         @if (registerForm.controls['lastName'].touched && (registerForm.controls['lastName'].hasError('required'))) {
-            <small class="text-red-500 leading-3">Input a valid phone number</small>
+            <small class="text-red-500 leading-3">Input a valid last name</small>
         }
 
         <label class="text-xs mt-3 mb-1">Phone Number</label>
@@ -79,6 +79,26 @@
         @if (registerForm.get('role')!.touched && registerForm.controls['role'].hasError('required') ) {
             <small class="text-red-500 leading-3">Pls select if you are a doctor or a patient</small>
         }
+
+        <section>
+            <div class="border border-borderColor rounded-md bg-black bg-opacity-[2%] w-full p-3 flex flex-col items-center justify-center
+             mt-5" mat-stroked-button (click)="filePicker.click()">
+                <img src="assets/svg/upload.svg" class="p-4" alt="">
+                <section class="text-black flex flex-col gap-1 text-center">
+                    <span class="font-bold text-opacity-[88%] text-normal">Click this area to upload profile picture</span>
+                    <span class="text-opacity-[65%] font-semibold text-xs">PNG, PDF or JPG. Max size of 5MB.</span>
+                </section>
+            </div>
+            <input type="file" placeholder="file" class="invisible" #filePicker (change)="onImagePicked($event)">
+        </section>
+        <section class="image-preview"
+            *ngIf="imagePreview && registerForm.controls['profilePicture'].valid">
+            <img [src]="imagePreview" alt="image-preview" class="max-w-96">
+        </section>
+        <section class="image-preview" *ngIf="registerForm.controls['profilePicture'].invalid && registerForm.controls['profilePicture'].dirty">
+            <p class="text-red-500 text-xs">Select a valid file</p>
+        </section>
+
         <app-custom-primary-button [disabled]="registerForm.invalid" [loading]="loading" type="submit" class="mt-4">
             Sign Up
         </app-custom-primary-button>

@@ -8,5 +8,6 @@ export interface User {
     uid: string;
     email: string;
     role: Role,
-    personalInformation?: InformationForm
+    personalInformation?: InformationForm,
+    profilePic: string
 }
