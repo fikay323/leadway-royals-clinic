@@ -12,7 +12,7 @@
 
         <label for="year" class="block text-sm font-medium">Select Year:</label>
         <select id="year" class="border rounded p-2" (change)="onYearChange($event)">
-            <option *ngFor="let year of [2024, 2023, 2022, 2021]" [value]="year" [selected]="year === selectedYear">{{
+            <option *ngFor="let year of [2025, 2024, 2023, 2022, 2021]" [value]="year" [selected]="year === selectedYear">{{
                 year }}</option>
         </select>
     </div>

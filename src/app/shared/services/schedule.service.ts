@@ -225,14 +225,16 @@ export class ScheduleService {
       .doc(doctorID)
       .valueChanges()
       .pipe(
-        map((schedule: IndividualDoctorSchedule) =>
-          schedule.timeSlots.filter(
-            (slot) => {
-              const slotStartDate = new Date(slot.startTime)
-              return slotStartDate.getMonth() === month &&
-              slotStartDate.getFullYear() === year
-            })
-        ), 
+        map((schedule: IndividualDoctorSchedule) =>{
+          const schedules = schedule.timeSlots.filter((slot) => {
+            const slotStartDate = new Date(slot.startTime)
+            return slotStartDate.getMonth() == month && slotStartDate.getFullYear() == year
+          })
+          const newSlots = schedules.sort((a, b) => {
+            return new Date(a.startTime).getTime() - new Date(b.startTime).getTime()
+          })
+          return newSlots
+        }),
         catchError(err => {
           this.errorHandlerService.handleError(err)
           return of([])
