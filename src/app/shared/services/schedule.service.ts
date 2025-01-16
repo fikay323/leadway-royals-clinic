@@ -186,30 +186,31 @@ export class ScheduleService {
 
   getPatientSchedules(patientID: string, year: number, month: number): Observable<TimeSlotWithDoctorID[]> {
     return this.afs
-      .collection<IndividualDoctorSchedule>('schedules')
+    .collection('schedules')
       .valueChanges()
       .pipe(
         map((schedules) => {
-          return schedules
-            .flatMap((schedule) => {
-              return schedule.timeSlots.map(timeslot => {
-                const newSlot: TimeSlotWithDoctorID = {
-                  ...timeslot,
-                  doctorFirstName: schedule.doctorFirstName,
-                  doctorLastName: schedule.doctorLastName,
-                  doctorID: schedule.doctorID
-                }
-                return newSlot
-              })
+          const allDoctorsSchedule: TimeSlotWithDoctorID[] = []
+          schedules.forEach((schedule: IndividualDoctorSchedule) => {
+            schedule.timeSlots.map(timeslot => {
+              const newSlot: TimeSlotWithDoctorID = {
+                doctorFirstName: schedule.doctorFirstName,
+                doctorLastName: schedule.doctorLastName,
+                doctorID: schedule.doctorID,
+                ...timeslot
+              }
+              allDoctorsSchedule.push(newSlot)
             })
-            .filter(
-              (slot) => {
-                const slotStartDate = new Date(slot.startTime)
-                return slot.bookerID === patientID &&
-                slotStartDate.getMonth() === month &&
-                slotStartDate.getFullYear() === year
-              })
-        }), 
+          })
+          const allDoctorsWithCurrentPatient = allDoctorsSchedule.filter(slot => {
+            const slotStartDate = new Date(slot.startTime)
+            return slot.bookerID === patientID && slotStartDate.getFullYear() == year && slotStartDate.getMonth() == month
+          })
+          const allDoctorsWithCurrentPatientSorted = allDoctorsWithCurrentPatient.sort((a, b) => {
+            return new Date(a.startTime).getTime() - new Date(b.startTime).getTime()
+          })
+          return allDoctorsWithCurrentPatientSorted
+        }),
         catchError(err => {
           this.errorHandlerService.handleError(err)
           return of([])
