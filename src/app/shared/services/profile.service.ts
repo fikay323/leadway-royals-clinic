@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, catchError, from, map, Observable, of } from 'rxjs';
+import { catchError, from, map, Observable, of, Subject, takeUntil } from 'rxjs';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 
 import { User } from '../models/user.model';
 import { ErrorHandlerService } from './error-handler.service';
+import { FirestoreService } from './firestore.service';
 
 export interface PersonalInformation {
   fullName: string;
@@ -38,8 +39,9 @@ export interface InformationForm {
 })
 
 export class ProfileService {
+  private destroy$ = new Subject<void>()
 
-  constructor(private afs: AngularFirestore, private errorHandlerService: ErrorHandlerService) { }
+  constructor(private afs: AngularFirestore, private errorHandlerService: ErrorHandlerService, private firestoreService: FirestoreService) { }
 
   createUserWithBasicInfo(user: User) {
     return from(
@@ -56,12 +58,12 @@ export class ProfileService {
   }
 
   getUserBasicInfo(uid) {
-    return this.afs.doc<User>(`users/${uid}`).valueChanges()
+    return this.firestoreService.listenToDocument<User>(`users/${uid}`).pipe(takeUntil(this.destroy$))
   }
   
   getPersonalInformation(user$: Observable<User>): Observable<InformationForm> {
     const userUID = this.getUserUID(user$)
-    return this.afs.doc<User>(`users/${userUID}`).valueChanges().pipe(
+    return this.getUserBasicInfo(userUID).pipe(
       map(user => user?.personalInformation), // Extract personal information only
       catchError(err => {
         this.errorHandlerService.handleError(err)
@@ -89,4 +91,9 @@ export class ProfileService {
     })
     return userUID
   }
+
+  ngOnDestroy() {
+    this.destroy$.next(); // Emit to complete all subscriptions
+    this.destroy$.complete(); // Complete the Subject
   }
+}

@@ -4,11 +4,10 @@ import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { AngularFireMessaging } from '@angular/fire/compat/messaging';
 import { of } from 'rxjs';
-import { catchError, take } from 'rxjs/operators';
+import { catchError } from 'rxjs/operators';
 import { User } from '../models/user.model';
 import { NotificationService } from './notification.service';
 import { environment } from '../../../environments/environment';
-import { getToken } from '@angular/fire/app-check';
 
 @Injectable({
   providedIn: 'root',

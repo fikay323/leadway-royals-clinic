@@ -72,11 +72,15 @@
 <section *ngIf="patientSchedule.length > 0" class="my-3 px-2 font-mullish w-fit">
     <span class="text-xl font font-semibold font-inter">Upcoming Schedules</span>
     <section class="flex flex-col ml-3 gap-2 text-base font-medium">
-        @for(item of patientSchedule; track $index) {
-            <span class="flex items-center gap-3 w-full">
-                <span>Dr {{ getFirstLetter(item.doctorFirstName) }}. {{ item.doctorLastName }} on {{ item.startTime | ordinalDateTime }}</span>
-                <mat-icon (click)="cancelAppointment(item)" class="outline rounded-sm font-bold text-white bg-red-600 cursor-pointer ml-auto" title="Cancel appointment ?">close</mat-icon>
-            </span>
+        @if (patientSchedule.length > 0) {
+            @for(item of patientSchedule; track $index) {
+                <span class="flex items-center gap-3 w-full">
+                    <span>Dr {{ getFirstLetter(item.doctorFirstName) }}. {{ item.doctorLastName }} on {{ item.startTime | ordinalDateTime }}</span>
+                    <mat-icon (click)="cancelAppointment(item)" class="outline rounded-sm font-bold text-white bg-red-600 cursor-pointer ml-auto" title="Cancel appointment ?">close</mat-icon>
+                </span>
+            }
+        } @else {
+            <span>No future appointments booked</span>
         }
     </section>
 </section>

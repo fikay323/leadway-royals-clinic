@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { BehaviorSubject, catchError, finalize, from, Observable, of, Subject, switchMap, tap } from 'rxjs';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { AngularFireStorage } from '@angular/fire/compat/storage';
 import { v4 as uuidv4 } from 'uuid';
 
 import { Role, User } from '../models/user.model';
@@ -11,7 +12,7 @@ import { loginRequest, registerRequest } from '../models/auth.model';
 import { ScheduleService } from './schedule.service';
 import { NotificationService } from './notification.service';
 import { InformationForm, ProfileService } from './profile.service';
-import { AngularFireStorage } from '@angular/fire/compat/storage';
+import { FirestoreService } from './firestore.service';
 
 @Injectable({
   providedIn: 'root'
@@ -23,13 +24,13 @@ export class AuthService {
 
   constructor(
     private afAuth: AngularFireAuth,
-    private afs: AngularFirestore,
     private afStorage: AngularFireStorage,
     private router: Router,
     private errorHandlerService: ErrorHandlerService,
     private profileService: ProfileService,
     private scheduleService: ScheduleService,
     private notificationService: NotificationService,
+    private firestoreService: FirestoreService
   ) {}
 
   autoLogin() {
@@ -103,9 +104,9 @@ export class AuthService {
     }
   }
 
-  login({email: email, password: password}: loginRequest): Observable<any> {
-    return from(this.afAuth.signInWithEmailAndPassword(email, password)).pipe(
-      tap(user => {
+  login({email: email, password: password}: loginRequest): Promise<any> {
+    return this.afAuth.signInWithEmailAndPassword(email, password)
+      .then(user => {
         this.profileService.getUserBasicInfo(user.user.uid).subscribe(data => {
           if(data){
             this.notificationService.alertSuccess('Login Successful')
@@ -113,24 +114,35 @@ export class AuthService {
             this.router.navigate(['/main-app', 'dashboard'])
           }
         })
-      }),
-      catchError(error => {
+      })
+      .catch(error => {
         this.errorHandlerService.handleError(error)
         return of(null)
       })
-    )
+
   }
 
   logout() {
     localStorage.removeItem(this._CREDENTIALS)
-    // this._user$.next(null)
-    from(this.afAuth.signOut()).subscribe({
-      next: (res) => {
+    window.localStorage.removeItem("firebase:session::<host-name>");
+    // const auth = getAuth();
+    // signOut(auth).then(() => {
+    //   // Sign-out successful.
+    //     this.notificationService.alertSuccess('User logged out successfully')
+    // }).catch((error) => {
+    //   // An error happened.
+    // });
+    // firebase.auth().signOut().then(function() {
+    //   this._user$.next(null)
+    // }, function(error) {
+      //   console.log("Error signing out:", error);  
+      //   this.errorHandlerService.handleError(error)
+      // });
+      this.firestoreService.stopAllListeners()
+      this.afAuth.signOut().then(res => {
         this.notificationService.alertSuccess('User logged out successfully')
-      },
-      error: (err) => {
-        this.errorHandlerService.handleError(err)
-      }
-    })
+      })
+    // .catch(err => {
+    // })
   }
 }

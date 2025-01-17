@@ -1,18 +1,21 @@
 // src/app/services/chat.service.ts
 
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
-import { catchError, from, map, Observable, of, switchMap, tap } from 'rxjs';
-import { Chat, Message, Participant } from '../models/chat.model';
+import { catchError, from, map, Observable, of, Subject, switchMap, takeUntil } from 'rxjs';
+import { Chat, Message } from '../models/chat.model';
 import { ErrorHandlerService } from './error-handler.service';
+import { FirestoreService } from './firestore.service';
 
 @Injectable({
   providedIn: 'root',
 })
-export class ChatService {
+export class ChatService implements OnDestroy {
+  private destroy$ = new Subject<void>()
   constructor(
     private afs: AngularFirestore,
-    private errorHandlerService: ErrorHandlerService
+    private errorHandlerService: ErrorHandlerService,
+    private firestoreService: FirestoreService
   ) {}
 
   initializeChat(
@@ -100,11 +103,11 @@ export class ChatService {
   }
 
   getUserChats(userID: string): Observable<Chat[]> {
-    return this.afs.collection<Chat>('chats', ref => ref.where('participantIDs', 'array-contains', userID)).valueChanges()
+    return this.firestoreService.listenToCollection<Chat>('chats', ref => ref.where('participantIDs', 'array-contains', userID)).pipe(takeUntil(this.destroy$))
   }
 
   getMessagesForChat(chatID: string): Observable<Message[]> {
-    return this.afs.collection<Message>(`chats/${chatID}/messages`, ref => ref.orderBy('sentAt', 'asc')).valueChanges();
+    return this.firestoreService.listenToCollection<Message>(`chats/${chatID}/messages`, ref => ref.orderBy('sentAt', 'asc')).pipe(takeUntil(this.destroy$))
   }
 
   sendMessage(
@@ -142,5 +145,10 @@ export class ChatService {
         return of(null);
       })
     );
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next(); // Emit to complete all subscriptions
+    this.destroy$.complete(); // Complete the Subject
   }
 }

@@ -17,6 +17,9 @@ export class DashboardComponent {
   personalInformation$: Observable<InformationForm> = this.profileService.getPersonalInformation(this.user$)
   userSchedulesWithDoctors: TimeSlotWithDoctorID[] = []
   userSchedulesWithDoctors$: Observable<TimeSlotWithDoctorID[]>
+  today = new Date();
+  public selectedMonth: number;
+  public selectedYear: number;
 
   constructor(
     private authService: AuthService, 
@@ -25,13 +28,15 @@ export class DashboardComponent {
   ) {}
 
   ngOnInit() {
+    this.selectedMonth = this.today.getMonth(); // Current month
+    this.selectedYear = this.today.getFullYear(); // Current year
     this.personalInformation$.subscribe(info => {
       this.personalInformation = info
     })
     this.user$.subscribe(user => {
       this.user = user
       if(user.role === 'patient') {
-        this.userSchedulesWithDoctors$ = this.scheduleService.getAllPatientSchedules(this.user.uid)
+        this.userSchedulesWithDoctors$ = this.scheduleService.getFuturePatientSchedules(this.user.uid, this.selectedYear, this.selectedMonth)
         this.userSchedulesWithDoctors$.subscribe(res => {
           if(res) {
             this.userSchedulesWithDoctors = res

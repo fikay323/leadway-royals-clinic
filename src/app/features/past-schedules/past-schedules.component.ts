@@ -26,7 +26,6 @@ export class PastSchedulesComponent implements OnInit {
   ) {
     this.selectedMonth = this.today.getMonth(); // Current month
     this.selectedYear = this.today.getFullYear(); // Current year
-    // this.selectedYear = 2024 // Current year
   }
 
   ngOnInit(): void {

@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
-import firebase from 'firebase/compat/app'; 
-import { catchError, forkJoin, from, map, Observable, of, tap } from 'rxjs';
+import { arrayUnion, arrayRemove } from '@angular/fire/firestore';
+import { catchError, forkJoin, from, map, Observable, of, Subject, takeUntil, tap } from 'rxjs';
 import emailjs from 'emailjs-com';
 
 import { ErrorHandlerService } from './error-handler.service';
 import { User } from '../models/user.model';
 import { NotificationService } from './notification.service';
 import { InformationForm } from './profile.service';
+import { FirestoreService } from './firestore.service';
 
 export interface TimeSlot { 
   startTime: string;        // Start time of the slot in ISO format (e.g., '2024-10-10T09:00:00Z')
@@ -36,6 +37,7 @@ export interface IndividualDoctorSchedule {
   providedIn: 'root'
 })
 export class ScheduleService {
+  private destroy$ = new Subject<void>();
   months: string[] = [
     'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'
   ];
@@ -44,10 +46,11 @@ export class ScheduleService {
     private afs: AngularFirestore, 
     private errorHandlerService: ErrorHandlerService, 
     private notificationService: NotificationService,
+    private firestoreService: FirestoreService
   ) {}
 
   getSchedule(): Observable<IndividualDoctorSchedule[]> {
-    return this.afs.collection<IndividualDoctorSchedule>('schedules').valueChanges().pipe(
+    return this.firestoreService.listenToCollection<IndividualDoctorSchedule>('schedules').pipe(
       map(res => {
         let schedule:IndividualDoctorSchedule[] = []
         res.forEach(doctor => {
@@ -60,7 +63,8 @@ export class ScheduleService {
       catchError(err => {
         this.errorHandlerService.handleError(err)
         return of([])
-      })
+      }),
+      takeUntil(this.destroy$)
     )
   }
 
@@ -89,7 +93,7 @@ export class ScheduleService {
     const doctorScheduleRef = this.afs.collection('schedules').doc(doctor.doctorID);
 
     return from(doctorScheduleRef.update({
-      timeSlots: firebase.firestore.FieldValue.arrayUnion(timeslot)
+      timeSlots: arrayUnion(timeslot)
     })).pipe(
       tap(res => {
         this.notificationService.alertSuccess('Appointment booked successfully')
@@ -123,7 +127,7 @@ export class ScheduleService {
     const doctorScheduleRef = this.afs.collection('schedules').doc(doctor ? doctor.doctorID : doctorID);
 
     return from(doctorScheduleRef.update({
-      timeSlots: firebase.firestore.FieldValue.arrayRemove(timeslot)
+      timeSlots: arrayRemove(timeslot)
     })).pipe(
       tap(res => {
         this.notificationService.alertSuccess('Appointment cancelled successfully')
@@ -158,7 +162,7 @@ export class ScheduleService {
   }
 
   getAllPatientSchedules(userUID): Observable<TimeSlotWithDoctorID[]> {
-    return this.afs.collection(`schedules`).valueChanges().pipe(
+    return this.firestoreService.listenToCollection(`schedules`).pipe(
       map((doctorsSchedule: IndividualDoctorSchedule[]) => {
         const timeSlots: TimeSlotWithDoctorID[] = []
         doctorsSchedule.forEach(doctorSchedule => {
@@ -180,50 +184,37 @@ export class ScheduleService {
       catchError(err => {
         this.errorHandlerService.handleError(err)
         return of([])
-      })
+      }),
+      takeUntil(this.destroy$)
     )
   }
 
   getPatientSchedules(patientID: string, year: number, month: number): Observable<TimeSlotWithDoctorID[]> {
-    return this.afs
-    .collection('schedules')
-      .valueChanges()
-      .pipe(
-        map((schedules) => {
-          const allDoctorsSchedule: TimeSlotWithDoctorID[] = []
-          schedules.forEach((schedule: IndividualDoctorSchedule) => {
-            schedule.timeSlots.map(timeslot => {
-              const newSlot: TimeSlotWithDoctorID = {
-                doctorFirstName: schedule.doctorFirstName,
-                doctorLastName: schedule.doctorLastName,
-                doctorID: schedule.doctorID,
-                ...timeslot
-              }
-              allDoctorsSchedule.push(newSlot)
-            })
-          })
-          const allDoctorsWithCurrentPatient = allDoctorsSchedule.filter(slot => {
-            const slotStartDate = new Date(slot.startTime)
-            return slot.bookerID === patientID && slotStartDate.getFullYear() == year && slotStartDate.getMonth() == month
-          })
-          const allDoctorsWithCurrentPatientSorted = allDoctorsWithCurrentPatient.sort((a, b) => {
-            return new Date(a.startTime).getTime() - new Date(b.startTime).getTime()
-          })
-          return allDoctorsWithCurrentPatientSorted
-        }),
-        catchError(err => {
-          this.errorHandlerService.handleError(err)
-          return of([])
-        })
-      );
+    const allSchedule = this.getAllPatientSchedules(patientID)
+    return allSchedule.pipe(map(schedules => {
+      const allDoctorsWithCurrentPatient = schedules.filter(slot => {
+                const slotStartDate = new Date(slot.startTime)
+                return slot.bookerID === patientID && slotStartDate.getFullYear() == year && slotStartDate.getMonth() == month
+              })
+      return allDoctorsWithCurrentPatient
+    }))
+  }
+
+  getFuturePatientSchedules(patientID: string, year: number, month: number): Observable<TimeSlotWithDoctorID[]> {
+    const allSchedule = this.getAllPatientSchedules(patientID)
+    return allSchedule.pipe(map(schedules => {
+      const allDoctorsWithCurrentPatient = schedules.filter(slot => {
+                const slotStartDate = new Date(slot.startTime)
+                return slot.bookerID === patientID && slotStartDate.getFullYear() >= year && slotStartDate.getMonth() >= month
+              })
+      return allDoctorsWithCurrentPatient
+    }))
   }
 
   // Get schedules for a doctor
   getDoctorSchedules(doctorID: string, year: number, month: number): Observable<TimeSlot[]> {
-    return this.afs
-      .collection<IndividualDoctorSchedule>('schedules')
-      .doc(doctorID)
-      .valueChanges()
+    const path = `schedules/${doctorID}`
+    return this.firestoreService.listenToDocument<IndividualDoctorSchedule>(path)
       .pipe(
         map((schedule: IndividualDoctorSchedule) =>{
           const schedules = schedule.timeSlots.filter((slot) => {
@@ -238,7 +229,8 @@ export class ScheduleService {
         catchError(err => {
           this.errorHandlerService.handleError(err)
           return of([])
-        })
+        }),
+        takeUntil(this.destroy$)
       );
   }
 }

@@ -9,6 +9,7 @@ import { AuthService } from './shared/services/auth.service';
 export class AppComponent {
   title = 'leadway-royals-clinic';
   constructor(private authService: AuthService) {}
+  
   ngOnInit() {
     this.authService.autoLogin()
   }
