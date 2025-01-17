@@ -125,24 +125,12 @@ export class AuthService {
   logout() {
     localStorage.removeItem(this._CREDENTIALS)
     window.localStorage.removeItem("firebase:session::<host-name>");
-    // const auth = getAuth();
-    // signOut(auth).then(() => {
-    //   // Sign-out successful.
-    //     this.notificationService.alertSuccess('User logged out successfully')
-    // }).catch((error) => {
-    //   // An error happened.
-    // });
-    // firebase.auth().signOut().then(function() {
-    //   this._user$.next(null)
-    // }, function(error) {
-      //   console.log("Error signing out:", error);  
-      //   this.errorHandlerService.handleError(error)
-      // });
       this.firestoreService.stopAllListeners()
       this.afAuth.signOut().then(res => {
         this.notificationService.alertSuccess('User logged out successfully')
       })
-    // .catch(err => {
-    // })
+      .catch(err => {
+        console.log("Error signing out:", err);  
+    })
   }
 }
